@@ -225,146 +225,141 @@
 
   <bpmndi:BPMNDiagram id="Diagram_ToBe">
     <bpmndi:BPMNPlane id="Plane_ToBe" bpmnElement="Collaboration_ToBe">
-      <bpmndi:BPMNShape id="Shape_Participant_Operations" bpmnElement="Participant_Operations" isHorizontal="true"><dc:Bounds x="50" y="50" width="3900" height="680" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Shape_Lane_Operator" bpmnElement="Lane_Operator" isHorizontal="true"><dc:Bounds x="80" y="50" width="3870" height="130" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Shape_Lane_WMS" bpmnElement="Lane_WMS" isHorizontal="true"><dc:Bounds x="80" y="180" width="3870" height="420" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Shape_Lane_Maintenance" bpmnElement="Lane_Maintenance" isHorizontal="true"><dc:Bounds x="80" y="600" width="3870" height="130" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Shape_Participant_Event_Intake" bpmnElement="Participant_Event_Intake" isHorizontal="true"><dc:Bounds x="50" y="780" width="3900" height="220" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Shape_Participant_WCS" bpmnElement="Participant_WCS" isHorizontal="true"><dc:Bounds x="50" y="1050" width="3900" height="190" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Shape_Lane_WCS_Simulator" bpmnElement="Lane_WCS_Simulator" isHorizontal="true"><dc:Bounds x="80" y="1050" width="3870" height="190" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Participant_Operations" bpmnElement="Participant_Operations" isHorizontal="true"><dc:Bounds x="50" y="40" width="3760" height="900" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Lane_Operator" bpmnElement="Lane_Operator" isHorizontal="true"><dc:Bounds x="80" y="40" width="3730" height="190" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Lane_WMS" bpmnElement="Lane_WMS" isHorizontal="true"><dc:Bounds x="80" y="230" width="3730" height="570" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Lane_Maintenance" bpmnElement="Lane_Maintenance" isHorizontal="true"><dc:Bounds x="80" y="800" width="3730" height="140" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Participant_Event_Intake" bpmnElement="Participant_Event_Intake" isHorizontal="true"><dc:Bounds x="50" y="990" width="3760" height="270" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Participant_WCS" bpmnElement="Participant_WCS" isHorizontal="true"><dc:Bounds x="50" y="1310" width="3760" height="290" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Lane_WCS_Simulator" bpmnElement="Lane_WCS_Simulator" isHorizontal="true"><dc:Bounds x="80" y="1310" width="3730" height="290" /></bpmndi:BPMNShape>
 
-      <bpmndi:BPMNShape id="Shape_Start_Inbound" bpmnElement="Start_Inbound"><dc:Bounds x="110" y="95" width="36" height="36" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Shape_Task_Scan_Receipt" bpmnElement="Task_Scan_Receipt"><dc:Bounds x="180" y="72" width="145" height="80" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Shape_Task_Validate_Receipt" bpmnElement="Task_Validate_Receipt"><dc:Bounds x="360" y="220" width="155" height="80" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Shape_Gateway_Receipt_Valid" bpmnElement="Gateway_Receipt_Valid" isMarkerVisible="true"><dc:Bounds x="550" y="235" width="50" height="50" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Shape_Task_Select_Location" bpmnElement="Task_Select_Location"><dc:Bounds x="635" y="220" width="155" height="80" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Shape_Gateway_Location_Available" bpmnElement="Gateway_Location_Available" isMarkerVisible="true"><dc:Bounds x="825" y="235" width="50" height="50" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Shape_Task_Create_Validate_Task" bpmnElement="Task_Create_Validate_Task"><dc:Bounds x="910" y="220" width="155" height="80" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Shape_Gateway_Device_Available" bpmnElement="Gateway_Device_Available" isMarkerVisible="true"><dc:Bounds x="1100" y="235" width="50" height="50" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Shape_Task_Record_Initial_Failure" bpmnElement="Task_Record_Initial_Failure"><dc:Bounds x="1210" y="340" width="155" height="70" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Shape_Task_Dispatch_Initial" bpmnElement="Task_Dispatch_Initial"><dc:Bounds x="1200" y="220" width="155" height="80" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Shape_Task_Receive_WCS_Event" bpmnElement="Task_Receive_WCS_Event"><dc:Bounds x="1410" y="220" width="155" height="80" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Shape_Gateway_Event_Outcome" bpmnElement="Gateway_Event_Outcome" isMarkerVisible="true"><dc:Bounds x="1980" y="235" width="50" height="50" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Shape_Task_Apply_Completed" bpmnElement="Task_Apply_Completed"><dc:Bounds x="2070" y="220" width="145" height="80" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Shape_Task_Commit_Inventory" bpmnElement="Task_Commit_Inventory"><dc:Bounds x="2260" y="220" width="145" height="80" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Shape_End_Pallet_Stored" bpmnElement="End_Pallet_Stored"><dc:Bounds x="2450" y="95" width="36" height="36" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Shape_Task_Show_PreTask_Exception" bpmnElement="Task_Show_PreTask_Exception"><dc:Bounds x="650" y="340" width="165" height="70" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Shape_End_PreTask_Exception" bpmnElement="End_PreTask_Exception"><dc:Bounds x="900" y="95" width="36" height="36" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Shape_Task_Update_Failure_Evidence" bpmnElement="Task_Update_Failure_Evidence"><dc:Bounds x="2070" y="340" width="170" height="70" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Shape_Gateway_Third_Failure" bpmnElement="Gateway_Third_Failure" isMarkerVisible="true"><dc:Bounds x="2280" y="350" width="50" height="50" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Shape_Task_Show_Exception" bpmnElement="Task_Show_Exception"><dc:Bounds x="2370" y="340" width="150" height="70" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Shape_Gateway_Cancel" bpmnElement="Gateway_Cancel" isMarkerVisible="true"><dc:Bounds x="2560" y="350" width="50" height="50" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Shape_Task_Check_Cancellation_Eligibility" bpmnElement="Task_Check_Cancellation_Eligibility"><dc:Bounds x="2650" y="320" width="180" height="70" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Shape_Gateway_Cancellation_Allowed" bpmnElement="Gateway_Cancellation_Allowed" isMarkerVisible="true"><dc:Bounds x="2870" y="330" width="50" height="50" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Shape_Task_Proposed_Cancel" bpmnElement="Task_Proposed_Cancel"><dc:Bounds x="2960" y="310" width="145" height="70" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Shape_End_Cancelled" bpmnElement="End_Cancelled"><dc:Bounds x="3140" y="95" width="36" height="36" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Shape_Gateway_Eligible_Recovery" bpmnElement="Gateway_Eligible_Recovery" isMarkerVisible="true"><dc:Bounds x="2660" y="480" width="50" height="50" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Shape_End_Exception_Queued" bpmnElement="End_Exception_Queued"><dc:Bounds x="3370" y="95" width="36" height="36" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Shape_Gateway_Retries_Used" bpmnElement="Gateway_Retries_Used" isMarkerVisible="true"><dc:Bounds x="2790" y="480" width="50" height="50" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Shape_Task_Retry_1" bpmnElement="Task_Retry_1"><dc:Bounds x="2890" y="430" width="115" height="55" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Shape_Task_Dispatch_Retry1" bpmnElement="Task_Dispatch_Retry1"><dc:Bounds x="3040" y="430" width="135" height="55" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Shape_Task_Retry_2" bpmnElement="Task_Retry_2"><dc:Bounds x="2890" y="520" width="115" height="55" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Shape_Task_Dispatch_Retry2" bpmnElement="Task_Dispatch_Retry2"><dc:Bounds x="3040" y="520" width="135" height="55" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Shape_Task_Escalate" bpmnElement="Task_Escalate"><dc:Bounds x="2360" y="500" width="155" height="70" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Shape_Task_Review_Recovery_Evidence" bpmnElement="Task_Review_Recovery_Evidence"><dc:Bounds x="2550" y="625" width="170" height="70" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Shape_End_Escalated" bpmnElement="End_Escalated"><dc:Bounds x="2800" y="95" width="36" height="36" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Shape_Annotation_Cancellation_Origins" bpmnElement="Annotation_Cancellation_Origins"><dc:Bounds x="2650" y="545" width="320" height="45" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Start_Inbound" bpmnElement="Start_Inbound"><dc:Bounds x="112" y="122" width="36" height="36" /><bpmndi:BPMNLabel><dc:Bounds x="85" y="162" width="90" height="27" /></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Scan_Receipt" bpmnElement="Task_Scan_Receipt"><dc:Bounds x="190" y="100" width="160" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_End_PreTask_Exception" bpmnElement="End_PreTask_Exception"><dc:Bounds x="672" y="122" width="36" height="36" /><bpmndi:BPMNLabel><dc:Bounds x="630" y="82" width="120" height="27" /></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_End_Pallet_Stored" bpmnElement="End_Pallet_Stored"><dc:Bounds x="2332" y="122" width="36" height="36" /><bpmndi:BPMNLabel><dc:Bounds x="2305" y="96" width="90" height="14" /></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_End_Exception_Queued" bpmnElement="End_Exception_Queued"><dc:Bounds x="3092" y="92" width="36" height="36" /><bpmndi:BPMNLabel><dc:Bounds x="2985" y="96" width="100" height="27" /></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_End_Cancelled" bpmnElement="End_Cancelled"><dc:Bounds x="3232" y="162" width="36" height="36" /><bpmndi:BPMNLabel><dc:Bounds x="3205" y="132" width="90" height="14" /></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_End_Escalated" bpmnElement="End_Escalated"><dc:Bounds x="3682" y="122" width="36" height="36" /><bpmndi:BPMNLabel><dc:Bounds x="3655" y="84" width="90" height="14" /></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Validate_Receipt" bpmnElement="Task_Validate_Receipt"><dc:Bounds x="345" y="280" width="170" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_Receipt_Valid" bpmnElement="Gateway_Receipt_Valid" isMarkerVisible="true"><dc:Bounds x="575" y="295" width="50" height="50" /><bpmndi:BPMNLabel><dc:Bounds x="555" y="262" width="90" height="27" /></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Select_Location" bpmnElement="Task_Select_Location"><dc:Bounds x="750" y="280" width="160" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_Location_Available" bpmnElement="Gateway_Location_Available" isMarkerVisible="true"><dc:Bounds x="985" y="295" width="50" height="50" /><bpmndi:BPMNLabel><dc:Bounds x="955" y="255" width="110" height="40" /></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Create_Validate_Task" bpmnElement="Task_Create_Validate_Task"><dc:Bounds x="1100" y="280" width="160" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_Device_Available" bpmnElement="Gateway_Device_Available" isMarkerVisible="true"><dc:Bounds x="1325" y="295" width="50" height="50" /><bpmndi:BPMNLabel><dc:Bounds x="1295" y="262" width="110" height="27" /></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Dispatch_Initial" bpmnElement="Task_Dispatch_Initial"><dc:Bounds x="1440" y="280" width="160" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Receive_WCS_Event" bpmnElement="Task_Receive_WCS_Event"><dc:Bounds x="1660" y="280" width="200" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_Event_Outcome" bpmnElement="Gateway_Event_Outcome" isMarkerVisible="true"><dc:Bounds x="1945" y="295" width="50" height="50" /><bpmndi:BPMNLabel><dc:Bounds x="1925" y="275" width="90" height="14" /></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Apply_Completed" bpmnElement="Task_Apply_Completed"><dc:Bounds x="2060" y="280" width="160" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Commit_Inventory" bpmnElement="Task_Commit_Inventory"><dc:Bounds x="2270" y="280" width="160" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Show_PreTask_Exception" bpmnElement="Task_Show_PreTask_Exception"><dc:Bounds x="555" y="430" width="170" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Record_Initial_Failure" bpmnElement="Task_Record_Initial_Failure"><dc:Bounds x="1265" y="430" width="170" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Update_Failure_Evidence" bpmnElement="Task_Update_Failure_Evidence"><dc:Bounds x="2040" y="430" width="200" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_Third_Failure" bpmnElement="Gateway_Third_Failure" isMarkerVisible="true"><dc:Bounds x="2325" y="445" width="50" height="50" /><bpmndi:BPMNLabel><dc:Bounds x="2305" y="413" width="90" height="14" /></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Show_Exception" bpmnElement="Task_Show_Exception"><dc:Bounds x="2450" y="430" width="160" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_Cancel" bpmnElement="Gateway_Cancel" isMarkerVisible="true"><dc:Bounds x="2685" y="445" width="50" height="50" /><bpmndi:BPMNLabel><dc:Bounds x="2665" y="405" width="90" height="14" /></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Check_Cancellation_Eligibility" bpmnElement="Task_Check_Cancellation_Eligibility"><dc:Bounds x="2795" y="425" width="230" height="90" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_Cancellation_Allowed" bpmnElement="Gateway_Cancellation_Allowed" isMarkerVisible="true"><dc:Bounds x="3085" y="445" width="50" height="50" /><bpmndi:BPMNLabel><dc:Bounds x="3065" y="512" width="90" height="14" /></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Proposed_Cancel" bpmnElement="Task_Proposed_Cancel"><dc:Bounds x="3175" y="440" width="150" height="60" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Escalate" bpmnElement="Task_Escalate"><dc:Bounds x="2265" y="570" width="170" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_Eligible_Recovery" bpmnElement="Gateway_Eligible_Recovery" isMarkerVisible="true"><dc:Bounds x="2685" y="585" width="50" height="50" /><bpmndi:BPMNLabel><dc:Bounds x="2590" y="596" width="95" height="27" /></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_Retries_Used" bpmnElement="Gateway_Retries_Used" isMarkerVisible="true"><dc:Bounds x="2825" y="585" width="50" height="50" /><bpmndi:BPMNLabel><dc:Bounds x="2745" y="562" width="95" height="27" /></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Retry_1" bpmnElement="Task_Retry_1"><dc:Bounds x="2940" y="580" width="120" height="60" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Dispatch_Retry1" bpmnElement="Task_Dispatch_Retry1"><dc:Bounds x="3285" y="580" width="150" height="60" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Retry_2" bpmnElement="Task_Retry_2"><dc:Bounds x="2940" y="695" width="120" height="60" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Dispatch_Retry2" bpmnElement="Task_Dispatch_Retry2"><dc:Bounds x="3095" y="695" width="150" height="60" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Review_Recovery_Evidence" bpmnElement="Task_Review_Recovery_Evidence"><dc:Bounds x="2255" y="830" width="190" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Start_Event_Intake" bpmnElement="Start_Event_Intake"><dc:Bounds x="742" y="1062" width="36" height="36" /><bpmndi:BPMNLabel><dc:Bounds x="705" y="1018" width="110" height="40" /></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Intake_Lookup_Event_Context" bpmnElement="Task_Intake_Lookup_Event_Context"><dc:Bounds x="825" y="1040" width="210" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_Intake_Context_Valid" bpmnElement="Gateway_Intake_Context_Valid" isMarkerVisible="true"><dc:Bounds x="1085" y="1055" width="50" height="50" /><bpmndi:BPMNLabel><dc:Bounds x="1065" y="1015" width="90" height="14" /></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_Duplicate_Event" bpmnElement="Gateway_Duplicate_Event" isMarkerVisible="true"><dc:Bounds x="1205" y="1055" width="50" height="50" /><bpmndi:BPMNLabel><dc:Bounds x="1185" y="1020" width="90" height="14" /></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Validate_WCS_Event" bpmnElement="Task_Validate_WCS_Event"><dc:Bounds x="1300" y="1040" width="200" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_Event_Valid" bpmnElement="Gateway_Event_Valid" isMarkerVisible="true"><dc:Bounds x="1555" y="1055" width="50" height="50" /><bpmndi:BPMNLabel><dc:Bounds x="1535" y="1015" width="90" height="14" /></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Intake_Route_Validated_Event" bpmnElement="Task_Intake_Route_Validated_Event"><dc:Bounds x="1665" y="1040" width="190" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_End_Intake_Routed" bpmnElement="End_Intake_Routed"><dc:Bounds x="1932" y="1062" width="36" height="36" /><bpmndi:BPMNLabel><dc:Bounds x="1905" y="1102" width="90" height="27" /></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Return_Duplicate" bpmnElement="Task_Return_Duplicate"><dc:Bounds x="1125" y="1155" width="210" height="70" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_End_Intake_Duplicate" bpmnElement="End_Intake_Duplicate"><dc:Bounds x="1382" y="1172" width="36" height="36" /><bpmndi:BPMNLabel><dc:Bounds x="1355" y="1135" width="90" height="27" /></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Record_Invalid_Event" bpmnElement="Task_Record_Invalid_Event"><dc:Bounds x="1495" y="1155" width="210" height="70" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_End_Intake_Invalid" bpmnElement="End_Intake_Invalid"><dc:Bounds x="1762" y="1172" width="36" height="36" /><bpmndi:BPMNLabel><dc:Bounds x="1735" y="1214" width="90" height="27" /></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Start_WCS_Command" bpmnElement="Start_WCS_Command"><dc:Bounds x="2282" y="1437" width="36" height="36" /><bpmndi:BPMNLabel><dc:Bounds x="2190" y="1426" width="85" height="27" /></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Execute_Simulated" bpmnElement="Task_Execute_Simulated"><dc:Bounds x="2375" y="1415" width="170" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_WCS_Outcome" bpmnElement="Gateway_WCS_Outcome" isMarkerVisible="true"><dc:Bounds x="2615" y="1430" width="50" height="50" /><bpmndi:BPMNLabel><dc:Bounds x="2550" y="1490" width="80" height="40" /></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Send_Completed" bpmnElement="Task_Send_Completed"><dc:Bounds x="2745" y="1325" width="170" height="70" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Send_Failed" bpmnElement="Task_Send_Failed"><dc:Bounds x="2805" y="1420" width="170" height="70" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Send_Timeout" bpmnElement="Task_Send_Timeout"><dc:Bounds x="2865" y="1515" width="170" height="70" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_End_WCS_Completed" bpmnElement="End_WCS_Completed"><dc:Bounds x="3082" y="1342" width="36" height="36" /><bpmndi:BPMNLabel><dc:Bounds x="3055" y="1383" width="90" height="27" /></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_End_WCS_Failed" bpmnElement="End_WCS_Failed"><dc:Bounds x="3082" y="1437" width="36" height="36" /><bpmndi:BPMNLabel><dc:Bounds x="3055" y="1478" width="90" height="14" /></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_End_WCS_Timeout" bpmnElement="End_WCS_Timeout"><dc:Bounds x="3082" y="1532" width="36" height="36" /><bpmndi:BPMNLabel><dc:Bounds x="3055" y="1573" width="90" height="14" /></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Annotation_Cancellation_Origins" bpmnElement="Annotation_Cancellation_Origins"><dc:Bounds x="2640" y="250" width="420" height="80" /></bpmndi:BPMNShape>
 
-      <bpmndi:BPMNShape id="Shape_Start_Event_Intake" bpmnElement="Start_Event_Intake"><dc:Bounds x="1100" y="872" width="36" height="36" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Shape_Task_Intake_Lookup_Event_Context" bpmnElement="Task_Intake_Lookup_Event_Context"><dc:Bounds x="1170" y="850" width="200" height="80" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Shape_Gateway_Intake_Context_Valid" bpmnElement="Gateway_Intake_Context_Valid" isMarkerVisible="true"><dc:Bounds x="1410" y="865" width="50" height="50" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Shape_Gateway_Duplicate_Event" bpmnElement="Gateway_Duplicate_Event" isMarkerVisible="true"><dc:Bounds x="1520" y="865" width="50" height="50" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Shape_Task_Return_Duplicate" bpmnElement="Task_Return_Duplicate"><dc:Bounds x="1500" y="930" width="180" height="55" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Shape_End_Intake_Duplicate" bpmnElement="End_Intake_Duplicate"><dc:Bounds x="1720" y="940" width="36" height="36" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Shape_Task_Validate_WCS_Event" bpmnElement="Task_Validate_WCS_Event"><dc:Bounds x="1610" y="850" width="190" height="80" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Shape_Gateway_Event_Valid" bpmnElement="Gateway_Event_Valid" isMarkerVisible="true"><dc:Bounds x="1840" y="865" width="50" height="50" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Shape_Task_Record_Invalid_Event" bpmnElement="Task_Record_Invalid_Event"><dc:Bounds x="1810" y="930" width="210" height="55" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Shape_End_Intake_Invalid" bpmnElement="End_Intake_Invalid"><dc:Bounds x="2060" y="940" width="36" height="36" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Shape_Task_Intake_Route_Validated_Event" bpmnElement="Task_Intake_Route_Validated_Event"><dc:Bounds x="1930" y="850" width="190" height="80" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Shape_End_Intake_Routed" bpmnElement="End_Intake_Routed"><dc:Bounds x="2160" y="872" width="36" height="36" /></bpmndi:BPMNShape>
-
-      <bpmndi:BPMNShape id="Shape_Start_WCS_Command" bpmnElement="Start_WCS_Command"><dc:Bounds x="1210" y="1120" width="36" height="36" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Shape_Task_Execute_Simulated" bpmnElement="Task_Execute_Simulated"><dc:Bounds x="1310" y="1100" width="155" height="75" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Shape_Gateway_WCS_Outcome" bpmnElement="Gateway_WCS_Outcome" isMarkerVisible="true"><dc:Bounds x="1510" y="1112" width="50" height="50" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Shape_Task_Send_Completed" bpmnElement="Task_Send_Completed"><dc:Bounds x="1620" y="1065" width="155" height="55" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Shape_End_WCS_Completed" bpmnElement="End_WCS_Completed"><dc:Bounds x="1830" y="1075" width="36" height="36" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Shape_Task_Send_Failed" bpmnElement="Task_Send_Failed"><dc:Bounds x="1620" y="1130" width="155" height="55" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Shape_End_WCS_Failed" bpmnElement="End_WCS_Failed"><dc:Bounds x="1830" y="1140" width="36" height="36" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Shape_Task_Send_Timeout" bpmnElement="Task_Send_Timeout"><dc:Bounds x="1620" y="1195" width="155" height="30" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Shape_End_WCS_Timeout" bpmnElement="End_WCS_Timeout"><dc:Bounds x="1830" y="1195" width="36" height="36" /></bpmndi:BPMNShape>
-
-      <bpmndi:BPMNEdge id="Edge_Flow_Ops_01" bpmnElement="Flow_Ops_01"><di:waypoint x="146" y="113" /><di:waypoint x="180" y="112" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Flow_Ops_02" bpmnElement="Flow_Ops_02"><di:waypoint x="325" y="112" /><di:waypoint x="342" y="112" /><di:waypoint x="342" y="260" /><di:waypoint x="360" y="260" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Flow_Ops_03" bpmnElement="Flow_Ops_03"><di:waypoint x="515" y="260" /><di:waypoint x="550" y="260" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Flow_Ops_04" bpmnElement="Flow_Ops_04"><di:waypoint x="600" y="260" /><di:waypoint x="635" y="260" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Flow_Ops_05" bpmnElement="Flow_Ops_05"><di:waypoint x="575" y="285" /><di:waypoint x="575" y="375" /><di:waypoint x="650" y="375" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Flow_Ops_06" bpmnElement="Flow_Ops_06"><di:waypoint x="790" y="260" /><di:waypoint x="825" y="260" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Flow_Ops_07" bpmnElement="Flow_Ops_07"><di:waypoint x="875" y="260" /><di:waypoint x="910" y="260" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Flow_Ops_08" bpmnElement="Flow_Ops_08"><di:waypoint x="850" y="285" /><di:waypoint x="850" y="375" /><di:waypoint x="815" y="375" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Flow_Ops_PreTask_To_End" bpmnElement="Flow_Ops_PreTask_To_End"><di:waypoint x="815" y="375" /><di:waypoint x="918" y="375" /><di:waypoint x="918" y="131" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Flow_Ops_09" bpmnElement="Flow_Ops_09"><di:waypoint x="1065" y="260" /><di:waypoint x="1100" y="260" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Flow_Ops_10" bpmnElement="Flow_Ops_10"><di:waypoint x="1150" y="260" /><di:waypoint x="1200" y="260" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Flow_Ops_11" bpmnElement="Flow_Ops_11"><di:waypoint x="1125" y="285" /><di:waypoint x="1125" y="375" /><di:waypoint x="1210" y="375" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Initial_Failure_To_Check" bpmnElement="Flow_Ops_Initial_Failure_To_Check"><di:waypoint x="1365" y="375" /><di:waypoint x="2280" y="375" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Flow_Ops_13" bpmnElement="Flow_Ops_13"><di:waypoint x="1355" y="260" /><di:waypoint x="1410" y="260" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Flow_Ops_14" bpmnElement="Flow_Ops_14"><di:waypoint x="1565" y="260" /><di:waypoint x="1980" y="260" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Completion_To_Apply" bpmnElement="Flow_Ops_Completion_To_Apply"><di:waypoint x="2030" y="260" /><di:waypoint x="2070" y="260" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Apply_To_Commit" bpmnElement="Flow_Ops_Apply_To_Commit"><di:waypoint x="2215" y="260" /><di:waypoint x="2260" y="260" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Commit_To_End" bpmnElement="Flow_Ops_Commit_To_End"><di:waypoint x="2405" y="260" /><di:waypoint x="2468" y="260" /><di:waypoint x="2468" y="131" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Failure_To_Update" bpmnElement="Flow_Ops_Failure_To_Update"><di:waypoint x="2005" y="285" /><di:waypoint x="2005" y="375" /><di:waypoint x="2070" y="375" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Timeout_To_Update" bpmnElement="Flow_Ops_Timeout_To_Update"><di:waypoint x="1980" y="260" /><di:waypoint x="1950" y="260" /><di:waypoint x="1950" y="405" /><di:waypoint x="2070" y="405" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Update_To_Third_Check" bpmnElement="Flow_Ops_Update_To_Third_Check"><di:waypoint x="2240" y="375" /><di:waypoint x="2280" y="375" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Third_Yes" bpmnElement="Flow_Ops_Third_Yes"><di:waypoint x="2305" y="400" /><di:waypoint x="2305" y="535" /><di:waypoint x="2360" y="535" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Escalate_To_Maintenance" bpmnElement="Flow_Ops_Escalate_To_Maintenance"><di:waypoint x="2515" y="535" /><di:waypoint x="2635" y="535" /><di:waypoint x="2635" y="625" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Maintenance_To_End" bpmnElement="Flow_Ops_Maintenance_To_End"><di:waypoint x="2720" y="660" /><di:waypoint x="2818" y="660" /><di:waypoint x="2818" y="131" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Third_No" bpmnElement="Flow_Ops_Third_No"><di:waypoint x="2330" y="375" /><di:waypoint x="2370" y="375" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Exception_To_Cancel" bpmnElement="Flow_Ops_Exception_To_Cancel"><di:waypoint x="2520" y="375" /><di:waypoint x="2560" y="375" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Cancel_Yes" bpmnElement="Flow_Ops_Cancel_Yes"><di:waypoint x="2610" y="375" /><di:waypoint x="2650" y="355" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Check_To_Cancel_Gateway" bpmnElement="Flow_Ops_Check_To_Cancel_Gateway"><di:waypoint x="2830" y="355" /><di:waypoint x="2870" y="355" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Cancel_Allowed" bpmnElement="Flow_Ops_Cancel_Allowed"><di:waypoint x="2920" y="355" /><di:waypoint x="2960" y="345" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Cancel_To_End" bpmnElement="Flow_Ops_Cancel_To_End"><di:waypoint x="3105" y="345" /><di:waypoint x="3158" y="345" /><di:waypoint x="3158" y="131" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Cancel_Rejected" bpmnElement="Flow_Ops_Cancel_Rejected"><di:waypoint x="2895" y="330" /><di:waypoint x="2895" y="160" /><di:waypoint x="3388" y="160" /><di:waypoint x="3388" y="131" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Cancel_No" bpmnElement="Flow_Ops_Cancel_No"><di:waypoint x="2585" y="400" /><di:waypoint x="2585" y="505" /><di:waypoint x="2660" y="505" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Recovery_No" bpmnElement="Flow_Ops_Recovery_No"><di:waypoint x="2685" y="530" /><di:waypoint x="2685" y="585" /><di:waypoint x="3388" y="585" /><di:waypoint x="3388" y="131" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Recovery_Yes" bpmnElement="Flow_Ops_Recovery_Yes"><di:waypoint x="2710" y="505" /><di:waypoint x="2790" y="505" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Retry_Zero" bpmnElement="Flow_Ops_Retry_Zero"><di:waypoint x="2815" y="480" /><di:waypoint x="2815" y="457" /><di:waypoint x="2890" y="457" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Retry1_To_Dispatch" bpmnElement="Flow_Ops_Retry1_To_Dispatch"><di:waypoint x="3005" y="457" /><di:waypoint x="3040" y="457" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Retry1_To_Wait" bpmnElement="Flow_Ops_Retry1_To_Wait"><di:waypoint x="3175" y="457" /><di:waypoint x="3210" y="457" /><di:waypoint x="3210" y="305" /><di:waypoint x="1488" y="305" /><di:waypoint x="1488" y="300" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Retry_One" bpmnElement="Flow_Ops_Retry_One"><di:waypoint x="2815" y="530" /><di:waypoint x="2815" y="547" /><di:waypoint x="2890" y="547" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Retry2_To_Dispatch" bpmnElement="Flow_Ops_Retry2_To_Dispatch"><di:waypoint x="3005" y="547" /><di:waypoint x="3040" y="547" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Retry2_To_Wait" bpmnElement="Flow_Ops_Retry2_To_Wait"><di:waypoint x="3175" y="547" /><di:waypoint x="3220" y="547" /><di:waypoint x="3220" y="310" /><di:waypoint x="1495" y="310" /><di:waypoint x="1495" y="300" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Retry_Exhausted" bpmnElement="Flow_Ops_Retry_Exhausted"><di:waypoint x="2840" y="505" /><di:waypoint x="3388" y="505" /><di:waypoint x="3388" y="131" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Association_Cancellation_Origins" bpmnElement="Association_Cancellation_Origins"><di:waypoint x="2740" y="390" /><di:waypoint x="2740" y="545" /></bpmndi:BPMNEdge>
-
-      <bpmndi:BPMNEdge id="Edge_Flow_Intake_Start_To_Lookup" bpmnElement="Flow_Intake_Start_To_Lookup"><di:waypoint x="1136" y="890" /><di:waypoint x="1170" y="890" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Flow_Intake_Lookup_To_Context" bpmnElement="Flow_Intake_Lookup_To_Context"><di:waypoint x="1370" y="890" /><di:waypoint x="1410" y="890" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Flow_Intake_Context_Invalid" bpmnElement="Flow_Intake_Context_Invalid"><di:waypoint x="1435" y="915" /><di:waypoint x="1435" y="995" /><di:waypoint x="1915" y="995" /><di:waypoint x="1915" y="985" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Flow_Intake_Context_Valid" bpmnElement="Flow_Intake_Context_Valid"><di:waypoint x="1460" y="890" /><di:waypoint x="1520" y="890" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Flow_Ops_15" bpmnElement="Flow_Ops_15"><di:waypoint x="1545" y="915" /><di:waypoint x="1545" y="930" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Duplicate_To_Wait" bpmnElement="Flow_Ops_Duplicate_To_Wait"><di:waypoint x="1680" y="958" /><di:waypoint x="1720" y="958" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Flow_Ops_17" bpmnElement="Flow_Ops_17"><di:waypoint x="1570" y="890" /><di:waypoint x="1610" y="890" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Event_To_Validation_Gateway" bpmnElement="Flow_Ops_Event_To_Validation_Gateway"><di:waypoint x="1800" y="890" /><di:waypoint x="1840" y="890" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Invalid_Event" bpmnElement="Flow_Ops_Invalid_Event"><di:waypoint x="1865" y="915" /><di:waypoint x="1865" y="930" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Invalid_To_Wait" bpmnElement="Flow_Ops_Invalid_To_Wait"><di:waypoint x="2020" y="958" /><di:waypoint x="2060" y="958" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Valid_Event" bpmnElement="Flow_Ops_Valid_Event"><di:waypoint x="1890" y="890" /><di:waypoint x="1930" y="890" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Flow_Intake_Route_To_End" bpmnElement="Flow_Intake_Route_To_End"><di:waypoint x="2120" y="890" /><di:waypoint x="2160" y="890" /></bpmndi:BPMNEdge>
-
-      <bpmndi:BPMNEdge id="Edge_Flow_WCS_01" bpmnElement="Flow_WCS_01"><di:waypoint x="1246" y="1138" /><di:waypoint x="1310" y="1138" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Flow_WCS_02" bpmnElement="Flow_WCS_02"><di:waypoint x="1465" y="1138" /><di:waypoint x="1510" y="1137" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Flow_WCS_03" bpmnElement="Flow_WCS_03"><di:waypoint x="1535" y="1112" /><di:waypoint x="1535" y="1092" /><di:waypoint x="1620" y="1092" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Flow_WCS_04" bpmnElement="Flow_WCS_04"><di:waypoint x="1775" y="1092" /><di:waypoint x="1830" y="1093" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Flow_WCS_05" bpmnElement="Flow_WCS_05"><di:waypoint x="1560" y="1137" /><di:waypoint x="1620" y="1157" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Flow_WCS_06" bpmnElement="Flow_WCS_06"><di:waypoint x="1775" y="1157" /><di:waypoint x="1830" y="1158" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Flow_WCS_07" bpmnElement="Flow_WCS_07"><di:waypoint x="1535" y="1162" /><di:waypoint x="1535" y="1210" /><di:waypoint x="1620" y="1210" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Flow_WCS_08" bpmnElement="Flow_WCS_08"><di:waypoint x="1775" y="1210" /><di:waypoint x="1830" y="1213" /></bpmndi:BPMNEdge>
-
-      <bpmndi:BPMNEdge id="Edge_Message_Command_Initial" bpmnElement="Message_Command_Initial"><di:waypoint x="1278" y="300" /><di:waypoint x="1228" y="1120" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Message_Command_Retry1" bpmnElement="Message_Command_Retry1"><di:waypoint x="3108" y="485" /><di:waypoint x="1228" y="1120" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Message_Command_Retry2" bpmnElement="Message_Command_Retry2"><di:waypoint x="3108" y="575" /><di:waypoint x="1228" y="1120" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Message_Completion" bpmnElement="Message_Completion"><di:waypoint x="1698" y="1065" /><di:waypoint x="1118" y="908" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Message_Failure" bpmnElement="Message_Failure"><di:waypoint x="1698" y="1130" /><di:waypoint x="1118" y="908" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Message_Timeout" bpmnElement="Message_Timeout"><di:waypoint x="1698" y="1195" /><di:waypoint x="1118" y="908" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Message_Route_Validated_Event" bpmnElement="Message_Route_Validated_Event"><di:waypoint x="2025" y="850" /><di:waypoint x="2025" y="760" /><di:waypoint x="1488" y="760" /><di:waypoint x="1488" y="300" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_01" bpmnElement="Flow_Ops_01"><di:waypoint x="148" y="140" /><di:waypoint x="190" y="140" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_02" bpmnElement="Flow_Ops_02"><di:waypoint x="350" y="140" /><di:waypoint x="430" y="140" /><di:waypoint x="430" y="280" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_03" bpmnElement="Flow_Ops_03"><di:waypoint x="515" y="320" /><di:waypoint x="575" y="320" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_04" bpmnElement="Flow_Ops_04"><di:waypoint x="625" y="320" /><di:waypoint x="750" y="320" /><bpmndi:BPMNLabel><dc:Bounds x="640" y="302" width="25" height="14" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_05" bpmnElement="Flow_Ops_05"><di:waypoint x="600" y="345" /><di:waypoint x="600" y="430" /><bpmndi:BPMNLabel><dc:Bounds x="606" y="362" width="20" height="14" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_06" bpmnElement="Flow_Ops_06"><di:waypoint x="910" y="320" /><di:waypoint x="985" y="320" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_07" bpmnElement="Flow_Ops_07"><di:waypoint x="1035" y="320" /><di:waypoint x="1100" y="320" /><bpmndi:BPMNLabel><dc:Bounds x="1045" y="302" width="25" height="14" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_08" bpmnElement="Flow_Ops_08"><di:waypoint x="1010" y="345" /><di:waypoint x="1010" y="470" /><di:waypoint x="725" y="470" /><bpmndi:BPMNLabel><dc:Bounds x="1016" y="362" width="20" height="14" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_PreTask_To_End" bpmnElement="Flow_Ops_PreTask_To_End"><di:waypoint x="690" y="430" /><di:waypoint x="690" y="158" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_09" bpmnElement="Flow_Ops_09"><di:waypoint x="1260" y="320" /><di:waypoint x="1325" y="320" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_10" bpmnElement="Flow_Ops_10"><di:waypoint x="1375" y="320" /><di:waypoint x="1440" y="320" /><bpmndi:BPMNLabel><dc:Bounds x="1385" y="302" width="25" height="14" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_11" bpmnElement="Flow_Ops_11"><di:waypoint x="1350" y="345" /><di:waypoint x="1350" y="430" /><bpmndi:BPMNLabel><dc:Bounds x="1356" y="362" width="20" height="14" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Initial_Failure_To_Check" bpmnElement="Flow_Ops_Initial_Failure_To_Check"><di:waypoint x="1435" y="470" /><di:waypoint x="1500" y="470" /><di:waypoint x="1500" y="545" /><di:waypoint x="2337.5" y="545" /><di:waypoint x="2337.5" y="482.5" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_13" bpmnElement="Flow_Ops_13"><di:waypoint x="1600" y="320" /><di:waypoint x="1660" y="320" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_14" bpmnElement="Flow_Ops_14"><di:waypoint x="1860" y="320" /><di:waypoint x="1945" y="320" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Completion_To_Apply" bpmnElement="Flow_Ops_Completion_To_Apply"><di:waypoint x="1995" y="320" /><di:waypoint x="2060" y="320" /><bpmndi:BPMNLabel><dc:Bounds x="2000" y="302" width="55" height="14" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Apply_To_Commit" bpmnElement="Flow_Ops_Apply_To_Commit"><di:waypoint x="2220" y="320" /><di:waypoint x="2270" y="320" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Commit_To_End" bpmnElement="Flow_Ops_Commit_To_End"><di:waypoint x="2350" y="280" /><di:waypoint x="2350" y="158" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Failure_To_Update" bpmnElement="Flow_Ops_Failure_To_Update"><di:waypoint x="1970" y="345" /><di:waypoint x="1970" y="450" /><di:waypoint x="2040" y="450" /><bpmndi:BPMNLabel><dc:Bounds x="1924" y="430" width="40" height="14" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Timeout_To_Update" bpmnElement="Flow_Ops_Timeout_To_Update"><di:waypoint x="1982.5" y="332.5" /><di:waypoint x="1982.5" y="490" /><di:waypoint x="2040" y="490" /><bpmndi:BPMNLabel><dc:Bounds x="1990" y="494" width="45" height="14" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Update_To_Third_Check" bpmnElement="Flow_Ops_Update_To_Third_Check"><di:waypoint x="2240" y="470" /><di:waypoint x="2325" y="470" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Third_Yes" bpmnElement="Flow_Ops_Third_Yes"><di:waypoint x="2362.5" y="482.5" /><di:waypoint x="2362.5" y="570" /><bpmndi:BPMNLabel><dc:Bounds x="2368" y="515" width="25" height="14" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Escalate_To_Maintenance" bpmnElement="Flow_Ops_Escalate_To_Maintenance"><di:waypoint x="2350" y="650" /><di:waypoint x="2350" y="830" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Maintenance_To_End" bpmnElement="Flow_Ops_Maintenance_To_End"><di:waypoint x="2445" y="870" /><di:waypoint x="3700" y="870" /><di:waypoint x="3700" y="158" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Third_No" bpmnElement="Flow_Ops_Third_No"><di:waypoint x="2375" y="470" /><di:waypoint x="2450" y="470" /><bpmndi:BPMNLabel><dc:Bounds x="2382" y="452" width="20" height="14" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Exception_To_Cancel" bpmnElement="Flow_Ops_Exception_To_Cancel"><di:waypoint x="2610" y="470" /><di:waypoint x="2685" y="470" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Cancel_Yes" bpmnElement="Flow_Ops_Cancel_Yes"><di:waypoint x="2735" y="470" /><di:waypoint x="2795" y="470" /><bpmndi:BPMNLabel><dc:Bounds x="2742" y="452" width="25" height="14" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Check_To_Cancel_Gateway" bpmnElement="Flow_Ops_Check_To_Cancel_Gateway"><di:waypoint x="3025" y="470" /><di:waypoint x="3085" y="470" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Cancel_Allowed" bpmnElement="Flow_Ops_Cancel_Allowed"><di:waypoint x="3135" y="470" /><di:waypoint x="3175" y="470" /><bpmndi:BPMNLabel><dc:Bounds x="3140" y="452" width="25" height="14" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Cancel_To_End" bpmnElement="Flow_Ops_Cancel_To_End"><di:waypoint x="3250" y="440" /><di:waypoint x="3250" y="198" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Cancel_Rejected" bpmnElement="Flow_Ops_Cancel_Rejected"><di:waypoint x="3110" y="445" /><di:waypoint x="3110" y="128" /><bpmndi:BPMNLabel><dc:Bounds x="3116" y="414" width="20" height="14" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Cancel_No" bpmnElement="Flow_Ops_Cancel_No"><di:waypoint x="2710" y="495" /><di:waypoint x="2710" y="585" /><bpmndi:BPMNLabel><dc:Bounds x="2716" y="520" width="20" height="14" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Recovery_No" bpmnElement="Flow_Ops_Recovery_No"><di:waypoint x="2710" y="635" /><di:waypoint x="2710" y="780" /><di:waypoint x="3620" y="780" /><di:waypoint x="3620" y="60" /><di:waypoint x="3110" y="60" /><di:waypoint x="3110" y="92" /><bpmndi:BPMNLabel><dc:Bounds x="2716" y="655" width="20" height="14" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Recovery_Yes" bpmnElement="Flow_Ops_Recovery_Yes"><di:waypoint x="2735" y="610" /><di:waypoint x="2825" y="610" /><bpmndi:BPMNLabel><dc:Bounds x="2745" y="592" width="25" height="14" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Retry_Zero" bpmnElement="Flow_Ops_Retry_Zero"><di:waypoint x="2875" y="610" /><di:waypoint x="2940" y="610" /><bpmndi:BPMNLabel><dc:Bounds x="2895" y="592" width="15" height="14" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Retry1_To_Dispatch" bpmnElement="Flow_Ops_Retry1_To_Dispatch"><di:waypoint x="3060" y="610" /><di:waypoint x="3285" y="610" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Retry1_To_Wait" bpmnElement="Flow_Ops_Retry1_To_Wait"><di:waypoint x="3435" y="610" /><di:waypoint x="3480" y="610" /><di:waypoint x="3480" y="378" /><di:waypoint x="1800" y="378" /><di:waypoint x="1800" y="360" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Retry_One" bpmnElement="Flow_Ops_Retry_One"><di:waypoint x="2850" y="635" /><di:waypoint x="2850" y="725" /><di:waypoint x="2940" y="725" /><bpmndi:BPMNLabel><dc:Bounds x="2858" y="668" width="15" height="14" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Retry2_To_Dispatch" bpmnElement="Flow_Ops_Retry2_To_Dispatch"><di:waypoint x="3060" y="725" /><di:waypoint x="3095" y="725" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Retry2_To_Wait" bpmnElement="Flow_Ops_Retry2_To_Wait"><di:waypoint x="3245" y="725" /><di:waypoint x="3500" y="725" /><di:waypoint x="3500" y="388" /><di:waypoint x="1820" y="388" /><di:waypoint x="1820" y="360" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Retry_Exhausted" bpmnElement="Flow_Ops_Retry_Exhausted"><di:waypoint x="2850" y="585" /><di:waypoint x="2850" y="575" /><di:waypoint x="3580" y="575" /><di:waypoint x="3580" y="110" /><di:waypoint x="3128" y="110" /><bpmndi:BPMNLabel><dc:Bounds x="2865" y="538" width="90" height="14" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Association_Cancellation_Origins" bpmnElement="Association_Cancellation_Origins"><di:waypoint x="2910" y="425" /><di:waypoint x="2910" y="330" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Intake_Start_To_Lookup" bpmnElement="Flow_Intake_Start_To_Lookup"><di:waypoint x="778" y="1080" /><di:waypoint x="825" y="1080" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Intake_Lookup_To_Context" bpmnElement="Flow_Intake_Lookup_To_Context"><di:waypoint x="1035" y="1080" /><di:waypoint x="1085" y="1080" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Intake_Context_Invalid" bpmnElement="Flow_Intake_Context_Invalid"><di:waypoint x="1110" y="1105" /><di:waypoint x="1110" y="1245" /><di:waypoint x="1650" y="1245" /><di:waypoint x="1650" y="1225" /><bpmndi:BPMNLabel><dc:Bounds x="1116" y="1130" width="20" height="14" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Intake_Context_Valid" bpmnElement="Flow_Intake_Context_Valid"><di:waypoint x="1135" y="1080" /><di:waypoint x="1205" y="1080" /><bpmndi:BPMNLabel><dc:Bounds x="1150" y="1062" width="25" height="14" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_15" bpmnElement="Flow_Ops_15"><di:waypoint x="1230" y="1105" /><di:waypoint x="1230" y="1155" /><bpmndi:BPMNLabel><dc:Bounds x="1236" y="1124" width="25" height="14" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Duplicate_To_Wait" bpmnElement="Flow_Ops_Duplicate_To_Wait"><di:waypoint x="1335" y="1190" /><di:waypoint x="1382" y="1190" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_17" bpmnElement="Flow_Ops_17"><di:waypoint x="1255" y="1080" /><di:waypoint x="1300" y="1080" /><bpmndi:BPMNLabel><dc:Bounds x="1262" y="1062" width="20" height="14" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Event_To_Validation_Gateway" bpmnElement="Flow_Ops_Event_To_Validation_Gateway"><di:waypoint x="1500" y="1080" /><di:waypoint x="1555" y="1080" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Invalid_Event" bpmnElement="Flow_Ops_Invalid_Event"><di:waypoint x="1580" y="1105" /><di:waypoint x="1580" y="1155" /><bpmndi:BPMNLabel><dc:Bounds x="1586" y="1124" width="20" height="14" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Invalid_To_Wait" bpmnElement="Flow_Ops_Invalid_To_Wait"><di:waypoint x="1705" y="1190" /><di:waypoint x="1762" y="1190" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Valid_Event" bpmnElement="Flow_Ops_Valid_Event"><di:waypoint x="1605" y="1080" /><di:waypoint x="1665" y="1080" /><bpmndi:BPMNLabel><dc:Bounds x="1612" y="1062" width="25" height="14" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Intake_Route_To_End" bpmnElement="Flow_Intake_Route_To_End"><di:waypoint x="1855" y="1080" /><di:waypoint x="1932" y="1080" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_WCS_01" bpmnElement="Flow_WCS_01"><di:waypoint x="2318" y="1455" /><di:waypoint x="2375" y="1455" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_WCS_02" bpmnElement="Flow_WCS_02"><di:waypoint x="2545" y="1455" /><di:waypoint x="2615" y="1455" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_WCS_03" bpmnElement="Flow_WCS_03"><di:waypoint x="2640" y="1430" /><di:waypoint x="2640" y="1360" /><di:waypoint x="2745" y="1360" /><bpmndi:BPMNLabel><dc:Bounds x="2660" y="1342" width="60" height="14" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_WCS_04" bpmnElement="Flow_WCS_04"><di:waypoint x="2915" y="1360" /><di:waypoint x="3082" y="1360" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_WCS_05" bpmnElement="Flow_WCS_05"><di:waypoint x="2665" y="1455" /><di:waypoint x="2805" y="1455" /><bpmndi:BPMNLabel><dc:Bounds x="2672" y="1437" width="90" height="14" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_WCS_06" bpmnElement="Flow_WCS_06"><di:waypoint x="2975" y="1455" /><di:waypoint x="3082" y="1455" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_WCS_07" bpmnElement="Flow_WCS_07"><di:waypoint x="2640" y="1480" /><di:waypoint x="2640" y="1550" /><di:waypoint x="2865" y="1550" /><bpmndi:BPMNLabel><dc:Bounds x="2660" y="1532" width="60" height="14" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_WCS_08" bpmnElement="Flow_WCS_08"><di:waypoint x="3035" y="1550" /><di:waypoint x="3082" y="1550" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Message_Command_Initial" bpmnElement="Message_Command_Initial"><di:waypoint x="1520" y="360" /><di:waypoint x="1520" y="965" /><di:waypoint x="2300" y="965" /><di:waypoint x="2300" y="1437" /><bpmndi:BPMNLabel><dc:Bounds x="1526" y="600" width="110" height="14" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Message_Command_Retry1" bpmnElement="Message_Command_Retry1"><di:waypoint x="3360" y="640" /><di:waypoint x="3360" y="1630" /><di:waypoint x="2290" y="1630" /><di:waypoint x="2290" y="1469.97" /><bpmndi:BPMNLabel><dc:Bounds x="3366" y="1000" width="150" height="14" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Message_Command_Retry2" bpmnElement="Message_Command_Retry2"><di:waypoint x="3170" y="755" /><di:waypoint x="3170" y="1620" /><di:waypoint x="2310" y="1620" /><di:waypoint x="2310" y="1469.97" /><bpmndi:BPMNLabel><dc:Bounds x="3176" y="1030" width="150" height="14" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Message_Completion" bpmnElement="Message_Completion"><di:waypoint x="2830" y="1325" /><di:waypoint x="2830" y="1295" /><di:waypoint x="748" y="1295" /><di:waypoint x="748" y="1093.42" /><bpmndi:BPMNLabel><dc:Bounds x="2836" y="1302" width="110" height="14" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Message_Failure" bpmnElement="Message_Failure"><di:waypoint x="2950" y="1420" /><di:waypoint x="2950" y="1285" /><di:waypoint x="760" y="1285" /><di:waypoint x="760" y="1098" /><bpmndi:BPMNLabel><dc:Bounds x="2956" y="1395" width="90" height="14" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Message_Timeout" bpmnElement="Message_Timeout"><di:waypoint x="3010" y="1515" /><di:waypoint x="3010" y="1275" /><di:waypoint x="772" y="1275" /><di:waypoint x="772" y="1093.42" /><bpmndi:BPMNLabel><dc:Bounds x="3016" y="1498" width="100" height="14" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Message_Route_Validated_Event" bpmnElement="Message_Route_Validated_Event"><di:waypoint x="1760" y="1040" /><di:waypoint x="1760" y="360" /><bpmndi:BPMNLabel><dc:Bounds x="1766" y="860" width="140" height="27" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>
