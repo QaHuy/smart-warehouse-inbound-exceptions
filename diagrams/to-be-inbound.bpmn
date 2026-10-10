@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+                  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+                  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+                  xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  id="Definitions_ToBe"
+                  targetNamespace="urn:portfolio:smart-warehouse:to-be">
+  <bpmn:documentation>Personal WMS/WCS portfolio case study using synthetic data. WCS behavior and device events are simulated. This proposed TO-BE design requires human process-owner, integration, maintenance, and safety review before any operational reuse.</bpmn:documentation>
+
+  <bpmn:collaboration id="Collaboration_ToBe">
+    <bpmn:participant id="Participant_Operations" name="Inbound operation and WMS Demo" processRef="Process_Operations" />
+    <bpmn:participant id="Participant_Event_Intake" name="WMS Event Intake" processRef="Process_Event_Intake" />
+    <bpmn:participant id="Participant_WCS" name="Simulated control boundary" processRef="Process_WCS" />
+    <bpmn:messageFlow id="Message_Command_Initial" name="Simulated command" sourceRef="Task_Dispatch_Initial" targetRef="Start_WCS_Command" />
+    <bpmn:messageFlow id="Message_Command_Retry1" name="Simulated retry command 1" sourceRef="Task_Dispatch_Retry1" targetRef="Start_WCS_Command" />
+    <bpmn:messageFlow id="Message_Command_Retry2" name="Simulated retry command 2" sourceRef="Task_Dispatch_Retry2" targetRef="Start_WCS_Command" />
+    <bpmn:messageFlow id="Message_Completion" name="TASK_COMPLETED" sourceRef="Task_Send_Completed" targetRef="Start_Event_Intake" />
+    <bpmn:messageFlow id="Message_Failure" name="TASK_FAILED" sourceRef="Task_Send_Failed" targetRef="Start_Event_Intake" />
+    <bpmn:messageFlow id="Message_Timeout" name="TASK_TIMEOUT" sourceRef="Task_Send_Timeout" targetRef="Start_Event_Intake" />
+    <bpmn:messageFlow id="Message_Route_Validated_Event" name="Validated unique event for active task" sourceRef="Task_Intake_Route_Validated_Event" targetRef="Task_Receive_WCS_Event" />
+  </bpmn:collaboration>
+
+  <bpmn:process id="Process_Operations" name="TO-BE inbound and exception management" isExecutable="false">
+    <bpmn:documentation>Proposed simulator workflow. WMS owns validation, task state, exceptions, idempotency, and inventory decisions. Cancellation origins and thresholds are proposals requiring human confirmation.</bpmn:documentation>
+    <bpmn:laneSet id="LaneSet_Operations">
+      <bpmn:lane id="Lane_Operator" name="Operator">
+        <bpmn:flowNodeRef>Start_Inbound</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Scan_Receipt</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>End_Pallet_Stored</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>End_Cancelled</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>End_PreTask_Exception</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>End_Exception_Queued</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>End_Escalated</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_WMS" name="WMS">
+        <bpmn:flowNodeRef>Task_Validate_Receipt</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_Receipt_Valid</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Select_Location</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_Location_Available</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Create_Validate_Task</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_Device_Available</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Record_Initial_Failure</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Dispatch_Initial</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Receive_WCS_Event</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_Event_Outcome</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Apply_Completed</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Commit_Inventory</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Show_PreTask_Exception</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Show_Exception</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_Cancel</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Check_Cancellation_Eligibility</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_Cancellation_Allowed</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Proposed_Cancel</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_Eligible_Recovery</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_Retries_Used</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Retry_1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Dispatch_Retry1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Retry_2</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Dispatch_Retry2</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Update_Failure_Evidence</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_Third_Failure</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Escalate</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Maintenance" name="Maintenance">
+        <bpmn:flowNodeRef>Task_Review_Recovery_Evidence</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+
+    <bpmn:startEvent id="Start_Inbound" name="Inbound pallet presented" />
+    <bpmn:userTask id="Task_Scan_Receipt" name="Scan / create inbound receipt" />
+    <bpmn:serviceTask id="Task_Validate_Receipt" name="Validate barcode, SKU, quantity, duplicate ID" />
+    <bpmn:exclusiveGateway id="Gateway_Receipt_Valid" name="Receipt valid?" />
+    <bpmn:serviceTask id="Task_Select_Location" name="Select deterministic compatible location" />
+    <bpmn:exclusiveGateway id="Gateway_Location_Available" name="Compatible capacity available?" />
+    <bpmn:serviceTask id="Task_Create_Validate_Task" name="Create and validate movement task" />
+    <bpmn:exclusiveGateway id="Gateway_Device_Available" name="Simulated device available?" />
+    <bpmn:serviceTask id="Task_Record_Initial_Failure" name="Record FAILED; failure 1, retry 0" />
+    <bpmn:sendTask id="Task_Dispatch_Initial" name="Dispatch simulated WCS command" />
+    <bpmn:receiveTask id="Task_Receive_WCS_Event" name="Await validated unique event from WMS Event Intake" />
+    <bpmn:exclusiveGateway id="Gateway_Event_Outcome" name="Event outcome?" />
+    <bpmn:serviceTask id="Task_Apply_Completed" name="Apply TASK_COMPLETED" />
+    <bpmn:serviceTask id="Task_Commit_Inventory" name="Commit inventory exactly once" />
+    <bpmn:serviceTask id="Task_Show_PreTask_Exception" name="Show receipt or location exception; no task exists" />
+    <bpmn:serviceTask id="Task_Show_Exception" name="Show exception in queue" />
+    <bpmn:exclusiveGateway id="Gateway_Cancel" name="Proposed cancellation selected?" />
+    <bpmn:serviceTask id="Task_Check_Cancellation_Eligibility" name="Check existing task state is CREATED, VALIDATED, DISPATCHED, IN_PROGRESS, FAILED, or TIMED_OUT" />
+    <bpmn:exclusiveGateway id="Gateway_Cancellation_Allowed" name="Existing task and allowed cancellation origin?" />
+    <bpmn:userTask id="Task_Proposed_Cancel" name="Proposed cancellation" />
+    <bpmn:exclusiveGateway id="Gateway_Eligible_Recovery" name="Task eligible for retry?" />
+    <bpmn:exclusiveGateway id="Gateway_Retries_Used" name="How many retries used?" />
+    <bpmn:userTask id="Task_Retry_1" name="Retry 1" />
+    <bpmn:sendTask id="Task_Dispatch_Retry1" name="Redispatch retry 1" />
+    <bpmn:userTask id="Task_Retry_2" name="Retry 2" />
+    <bpmn:sendTask id="Task_Dispatch_Retry2" name="Redispatch retry 2" />
+    <bpmn:serviceTask id="Task_Update_Failure_Evidence" name="Set FAILED / TIMED_OUT; increment failure evidence; update exception" />
+    <bpmn:exclusiveGateway id="Gateway_Third_Failure" name="Third failure overall?" />
+    <bpmn:serviceTask id="Task_Escalate" name="Escalate exception; no third retry" />
+    <bpmn:manualTask id="Task_Review_Recovery_Evidence" name="Review simulated recovery evidence" />
+    <bpmn:endEvent id="End_Pallet_Stored" name="Pallet stored" />
+    <bpmn:endEvent id="End_Cancelled" name="Task cancelled" />
+    <bpmn:endEvent id="End_PreTask_Exception" name="Receipt or location exception visible" />
+    <bpmn:endEvent id="End_Exception_Queued" name="Exception awaits human decision" />
+    <bpmn:endEvent id="End_Escalated" name="Exception escalated" />
+
+    <bpmn:textAnnotation id="Annotation_Cancellation_Origins">
+      <bpmn:text>PROPOSED cancellation guard: an existing task must be in CREATED, VALIDATED, DISPATCHED, IN_PROGRESS, FAILED, or TIMED_OUT. COMPLETED and CANCELLED remain terminal.</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_Cancellation_Origins" sourceRef="Task_Check_Cancellation_Eligibility" targetRef="Annotation_Cancellation_Origins" />
+
+    <bpmn:sequenceFlow id="Flow_Ops_01" sourceRef="Start_Inbound" targetRef="Task_Scan_Receipt" />
+    <bpmn:sequenceFlow id="Flow_Ops_02" sourceRef="Task_Scan_Receipt" targetRef="Task_Validate_Receipt" />
+    <bpmn:sequenceFlow id="Flow_Ops_03" sourceRef="Task_Validate_Receipt" targetRef="Gateway_Receipt_Valid" />
+    <bpmn:sequenceFlow id="Flow_Ops_04" name="Yes" sourceRef="Gateway_Receipt_Valid" targetRef="Task_Select_Location" />
+    <bpmn:sequenceFlow id="Flow_Ops_05" name="No" sourceRef="Gateway_Receipt_Valid" targetRef="Task_Show_PreTask_Exception" />
+    <bpmn:sequenceFlow id="Flow_Ops_06" sourceRef="Task_Select_Location" targetRef="Gateway_Location_Available" />
+    <bpmn:sequenceFlow id="Flow_Ops_07" name="Yes" sourceRef="Gateway_Location_Available" targetRef="Task_Create_Validate_Task" />
+    <bpmn:sequenceFlow id="Flow_Ops_08" name="No" sourceRef="Gateway_Location_Available" targetRef="Task_Show_PreTask_Exception" />
+    <bpmn:sequenceFlow id="Flow_Ops_PreTask_To_End" sourceRef="Task_Show_PreTask_Exception" targetRef="End_PreTask_Exception" />
+    <bpmn:sequenceFlow id="Flow_Ops_09" sourceRef="Task_Create_Validate_Task" targetRef="Gateway_Device_Available" />
+    <bpmn:sequenceFlow id="Flow_Ops_10" name="Yes" sourceRef="Gateway_Device_Available" targetRef="Task_Dispatch_Initial" />
+    <bpmn:sequenceFlow id="Flow_Ops_11" name="No" sourceRef="Gateway_Device_Available" targetRef="Task_Record_Initial_Failure" />
+    <bpmn:sequenceFlow id="Flow_Ops_Initial_Failure_To_Check" sourceRef="Task_Record_Initial_Failure" targetRef="Gateway_Third_Failure" />
+    <bpmn:sequenceFlow id="Flow_Ops_13" sourceRef="Task_Dispatch_Initial" targetRef="Task_Receive_WCS_Event" />
+    <bpmn:sequenceFlow id="Flow_Ops_14" sourceRef="Task_Receive_WCS_Event" targetRef="Gateway_Event_Outcome" />
+    <bpmn:sequenceFlow id="Flow_Ops_Completion_To_Apply" name="Completion" sourceRef="Gateway_Event_Outcome" targetRef="Task_Apply_Completed" />
+    <bpmn:sequenceFlow id="Flow_Ops_Apply_To_Commit" sourceRef="Task_Apply_Completed" targetRef="Task_Commit_Inventory" />
+    <bpmn:sequenceFlow id="Flow_Ops_Commit_To_End" sourceRef="Task_Commit_Inventory" targetRef="End_Pallet_Stored" />
+    <bpmn:sequenceFlow id="Flow_Ops_Failure_To_Update" name="Failure" sourceRef="Gateway_Event_Outcome" targetRef="Task_Update_Failure_Evidence" />
+    <bpmn:sequenceFlow id="Flow_Ops_Timeout_To_Update" name="Timeout" sourceRef="Gateway_Event_Outcome" targetRef="Task_Update_Failure_Evidence" />
+    <bpmn:sequenceFlow id="Flow_Ops_Update_To_Third_Check" sourceRef="Task_Update_Failure_Evidence" targetRef="Gateway_Third_Failure" />
+    <bpmn:sequenceFlow id="Flow_Ops_Third_Yes" name="Yes" sourceRef="Gateway_Third_Failure" targetRef="Task_Escalate">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">failure_count = 3</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_Ops_Escalate_To_Maintenance" sourceRef="Task_Escalate" targetRef="Task_Review_Recovery_Evidence" />
+    <bpmn:sequenceFlow id="Flow_Ops_Maintenance_To_End" sourceRef="Task_Review_Recovery_Evidence" targetRef="End_Escalated" />
+    <bpmn:sequenceFlow id="Flow_Ops_Third_No" name="No" sourceRef="Gateway_Third_Failure" targetRef="Task_Show_Exception">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">failure_count &lt; 3</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_Ops_Exception_To_Cancel" sourceRef="Task_Show_Exception" targetRef="Gateway_Cancel" />
+    <bpmn:sequenceFlow id="Flow_Ops_Cancel_Yes" name="Yes" sourceRef="Gateway_Cancel" targetRef="Task_Check_Cancellation_Eligibility" />
+    <bpmn:sequenceFlow id="Flow_Ops_Check_To_Cancel_Gateway" sourceRef="Task_Check_Cancellation_Eligibility" targetRef="Gateway_Cancellation_Allowed" />
+    <bpmn:sequenceFlow id="Flow_Ops_Cancel_Allowed" name="Yes" sourceRef="Gateway_Cancellation_Allowed" targetRef="Task_Proposed_Cancel" />
+    <bpmn:sequenceFlow id="Flow_Ops_Cancel_To_End" sourceRef="Task_Proposed_Cancel" targetRef="End_Cancelled" />
+    <bpmn:sequenceFlow id="Flow_Ops_Cancel_Rejected" name="No" sourceRef="Gateway_Cancellation_Allowed" targetRef="End_Exception_Queued" />
+    <bpmn:sequenceFlow id="Flow_Ops_Cancel_No" name="No" sourceRef="Gateway_Cancel" targetRef="Gateway_Eligible_Recovery" />
+    <bpmn:sequenceFlow id="Flow_Ops_Recovery_No" name="No" sourceRef="Gateway_Eligible_Recovery" targetRef="End_Exception_Queued" />
+    <bpmn:sequenceFlow id="Flow_Ops_Recovery_Yes" name="Yes" sourceRef="Gateway_Eligible_Recovery" targetRef="Gateway_Retries_Used" />
+    <bpmn:sequenceFlow id="Flow_Ops_Retry_Zero" name="0" sourceRef="Gateway_Retries_Used" targetRef="Task_Retry_1" />
+    <bpmn:sequenceFlow id="Flow_Ops_Retry1_To_Dispatch" sourceRef="Task_Retry_1" targetRef="Task_Dispatch_Retry1" />
+    <bpmn:sequenceFlow id="Flow_Ops_Retry1_To_Wait" sourceRef="Task_Dispatch_Retry1" targetRef="Task_Receive_WCS_Event" />
+    <bpmn:sequenceFlow id="Flow_Ops_Retry_One" name="1" sourceRef="Gateway_Retries_Used" targetRef="Task_Retry_2" />
+    <bpmn:sequenceFlow id="Flow_Ops_Retry2_To_Dispatch" sourceRef="Task_Retry_2" targetRef="Task_Dispatch_Retry2" />
+    <bpmn:sequenceFlow id="Flow_Ops_Retry2_To_Wait" sourceRef="Task_Dispatch_Retry2" targetRef="Task_Receive_WCS_Event" />
+    <bpmn:sequenceFlow id="Flow_Ops_Retry_Exhausted" name="2 / no retry available" sourceRef="Gateway_Retries_Used" targetRef="End_Exception_Queued" />
+  </bpmn:process>
+
+  <bpmn:process id="Process_Event_Intake" name="WMS Event Intake" isExecutable="false">
+    <bpmn:documentation>Each simulated WCS event starts an independent intake instance, including a replay after the related inbound process has ended. The intake validates required payload, task and correlation identity, current task state, and event_id. Invalid, unknown, or out-of-sequence events record diagnostic evidence and respond without mutation. A duplicate for either a non-terminal or terminal task returns success without state or inventory mutation. Only a unique event valid for the current non-terminal state is routed to the active task workflow; a unique valid completion can then commit inventory exactly once after all guards.</bpmn:documentation>
+    <bpmn:startEvent id="Start_Event_Intake" name="Each simulated WCS event received">
+      <bpmn:messageEventDefinition id="MessageDefinition_Event_Intake" />
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="Task_Intake_Lookup_Event_Context" name="Validate required payload and task / correlation identity; look up current state and event_id" />
+    <bpmn:exclusiveGateway id="Gateway_Intake_Context_Valid" name="Payload, task, and correlation context valid?" />
+    <bpmn:exclusiveGateway id="Gateway_Duplicate_Event" name="Duplicate event_id?" />
+    <bpmn:serviceTask id="Task_Return_Duplicate" name="Return duplicate success; no mutation; no state or inventory mutation" />
+    <bpmn:serviceTask id="Task_Validate_WCS_Event" name="Validate unique event against current-state transition" />
+    <bpmn:exclusiveGateway id="Gateway_Event_Valid" name="Unique event valid for current state?" />
+    <bpmn:serviceTask id="Task_Record_Invalid_Event" name="Record diagnostic audit and respond; no state or inventory mutation" />
+    <bpmn:sendTask id="Task_Intake_Route_Validated_Event" name="Route unique valid event to active task workflow" />
+    <bpmn:endEvent id="End_Intake_Invalid" name="Invalid event recorded and answered" />
+    <bpmn:endEvent id="End_Intake_Duplicate" name="Duplicate acknowledged" />
+    <bpmn:endEvent id="End_Intake_Routed" name="Validated event routed" />
+    <bpmn:sequenceFlow id="Flow_Intake_Start_To_Lookup" sourceRef="Start_Event_Intake" targetRef="Task_Intake_Lookup_Event_Context" />
+    <bpmn:sequenceFlow id="Flow_Intake_Lookup_To_Context" sourceRef="Task_Intake_Lookup_Event_Context" targetRef="Gateway_Intake_Context_Valid" />
+    <bpmn:sequenceFlow id="Flow_Intake_Context_Invalid" name="No" sourceRef="Gateway_Intake_Context_Valid" targetRef="Task_Record_Invalid_Event" />
+    <bpmn:sequenceFlow id="Flow_Intake_Context_Valid" name="Yes" sourceRef="Gateway_Intake_Context_Valid" targetRef="Gateway_Duplicate_Event" />
+    <bpmn:sequenceFlow id="Flow_Ops_15" name="Yes" sourceRef="Gateway_Duplicate_Event" targetRef="Task_Return_Duplicate" />
+    <bpmn:sequenceFlow id="Flow_Ops_Duplicate_To_Wait" sourceRef="Task_Return_Duplicate" targetRef="End_Intake_Duplicate" />
+    <bpmn:sequenceFlow id="Flow_Ops_17" name="No" sourceRef="Gateway_Duplicate_Event" targetRef="Task_Validate_WCS_Event" />
+    <bpmn:sequenceFlow id="Flow_Ops_Event_To_Validation_Gateway" sourceRef="Task_Validate_WCS_Event" targetRef="Gateway_Event_Valid" />
+    <bpmn:sequenceFlow id="Flow_Ops_Invalid_Event" name="No" sourceRef="Gateway_Event_Valid" targetRef="Task_Record_Invalid_Event">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">event_valid = false</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_Ops_Invalid_To_Wait" sourceRef="Task_Record_Invalid_Event" targetRef="End_Intake_Invalid" />
+    <bpmn:sequenceFlow id="Flow_Ops_Valid_Event" name="Yes" sourceRef="Gateway_Event_Valid" targetRef="Task_Intake_Route_Validated_Event">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">event_valid = true</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_Intake_Route_To_End" sourceRef="Task_Intake_Route_Validated_Event" targetRef="End_Intake_Routed" />
+  </bpmn:process>
+
+  <bpmn:process id="Process_WCS" name="Simulated WCS execution" isExecutable="false">
+    <bpmn:documentation>Every process instance represents one simulated command. Device actions and returned events are synthetic evidence only and never mutate WMS inventory directly.</bpmn:documentation>
+    <bpmn:laneSet id="LaneSet_WCS">
+      <bpmn:lane id="Lane_WCS_Simulator" name="WCS Simulator">
+        <bpmn:flowNodeRef>Start_WCS_Command</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Execute_Simulated</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_WCS_Outcome</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Send_Completed</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Send_Failed</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Send_Timeout</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>End_WCS_Completed</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>End_WCS_Failed</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>End_WCS_Timeout</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="Start_WCS_Command" name="Command received" />
+    <bpmn:serviceTask id="Task_Execute_Simulated" name="Execute simulated movement" />
+    <bpmn:exclusiveGateway id="Gateway_WCS_Outcome" name="Simulated execution outcome?" />
+    <bpmn:sendTask id="Task_Send_Completed" name="Emit unique completion event" />
+    <bpmn:sendTask id="Task_Send_Failed" name="Emit offline or jam failure event" />
+    <bpmn:sendTask id="Task_Send_Timeout" name="Emit timeout event" />
+    <bpmn:endEvent id="End_WCS_Completed" name="Completion event sent" />
+    <bpmn:endEvent id="End_WCS_Failed" name="Failure event sent" />
+    <bpmn:endEvent id="End_WCS_Timeout" name="Timeout event sent" />
+    <bpmn:sequenceFlow id="Flow_WCS_01" sourceRef="Start_WCS_Command" targetRef="Task_Execute_Simulated" />
+    <bpmn:sequenceFlow id="Flow_WCS_02" sourceRef="Task_Execute_Simulated" targetRef="Gateway_WCS_Outcome" />
+    <bpmn:sequenceFlow id="Flow_WCS_03" name="Completed" sourceRef="Gateway_WCS_Outcome" targetRef="Task_Send_Completed" />
+    <bpmn:sequenceFlow id="Flow_WCS_04" sourceRef="Task_Send_Completed" targetRef="End_WCS_Completed" />
+    <bpmn:sequenceFlow id="Flow_WCS_05" name="Offline or jam" sourceRef="Gateway_WCS_Outcome" targetRef="Task_Send_Failed" />
+    <bpmn:sequenceFlow id="Flow_WCS_06" sourceRef="Task_Send_Failed" targetRef="End_WCS_Failed" />
+    <bpmn:sequenceFlow id="Flow_WCS_07" name="Timed out" sourceRef="Gateway_WCS_Outcome" targetRef="Task_Send_Timeout" />
+    <bpmn:sequenceFlow id="Flow_WCS_08" sourceRef="Task_Send_Timeout" targetRef="End_WCS_Timeout" />
+  </bpmn:process>
+
+  <bpmndi:BPMNDiagram id="Diagram_ToBe">
+    <bpmndi:BPMNPlane id="Plane_ToBe" bpmnElement="Collaboration_ToBe">
+      <bpmndi:BPMNShape id="Shape_Participant_Operations" bpmnElement="Participant_Operations" isHorizontal="true"><dc:Bounds x="50" y="50" width="3900" height="680" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Lane_Operator" bpmnElement="Lane_Operator" isHorizontal="true"><dc:Bounds x="80" y="50" width="3870" height="130" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Lane_WMS" bpmnElement="Lane_WMS" isHorizontal="true"><dc:Bounds x="80" y="180" width="3870" height="420" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Lane_Maintenance" bpmnElement="Lane_Maintenance" isHorizontal="true"><dc:Bounds x="80" y="600" width="3870" height="130" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Participant_Event_Intake" bpmnElement="Participant_Event_Intake" isHorizontal="true"><dc:Bounds x="50" y="780" width="3900" height="220" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Participant_WCS" bpmnElement="Participant_WCS" isHorizontal="true"><dc:Bounds x="50" y="1050" width="3900" height="190" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Lane_WCS_Simulator" bpmnElement="Lane_WCS_Simulator" isHorizontal="true"><dc:Bounds x="80" y="1050" width="3870" height="190" /></bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Shape_Start_Inbound" bpmnElement="Start_Inbound"><dc:Bounds x="110" y="95" width="36" height="36" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Scan_Receipt" bpmnElement="Task_Scan_Receipt"><dc:Bounds x="180" y="72" width="145" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Validate_Receipt" bpmnElement="Task_Validate_Receipt"><dc:Bounds x="360" y="220" width="155" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_Receipt_Valid" bpmnElement="Gateway_Receipt_Valid" isMarkerVisible="true"><dc:Bounds x="550" y="235" width="50" height="50" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Select_Location" bpmnElement="Task_Select_Location"><dc:Bounds x="635" y="220" width="155" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_Location_Available" bpmnElement="Gateway_Location_Available" isMarkerVisible="true"><dc:Bounds x="825" y="235" width="50" height="50" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Create_Validate_Task" bpmnElement="Task_Create_Validate_Task"><dc:Bounds x="910" y="220" width="155" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_Device_Available" bpmnElement="Gateway_Device_Available" isMarkerVisible="true"><dc:Bounds x="1100" y="235" width="50" height="50" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Record_Initial_Failure" bpmnElement="Task_Record_Initial_Failure"><dc:Bounds x="1210" y="340" width="155" height="70" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Dispatch_Initial" bpmnElement="Task_Dispatch_Initial"><dc:Bounds x="1200" y="220" width="155" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Receive_WCS_Event" bpmnElement="Task_Receive_WCS_Event"><dc:Bounds x="1410" y="220" width="155" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_Event_Outcome" bpmnElement="Gateway_Event_Outcome" isMarkerVisible="true"><dc:Bounds x="1980" y="235" width="50" height="50" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Apply_Completed" bpmnElement="Task_Apply_Completed"><dc:Bounds x="2070" y="220" width="145" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Commit_Inventory" bpmnElement="Task_Commit_Inventory"><dc:Bounds x="2260" y="220" width="145" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_End_Pallet_Stored" bpmnElement="End_Pallet_Stored"><dc:Bounds x="2450" y="95" width="36" height="36" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Show_PreTask_Exception" bpmnElement="Task_Show_PreTask_Exception"><dc:Bounds x="650" y="340" width="165" height="70" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_End_PreTask_Exception" bpmnElement="End_PreTask_Exception"><dc:Bounds x="900" y="95" width="36" height="36" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Update_Failure_Evidence" bpmnElement="Task_Update_Failure_Evidence"><dc:Bounds x="2070" y="340" width="170" height="70" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_Third_Failure" bpmnElement="Gateway_Third_Failure" isMarkerVisible="true"><dc:Bounds x="2280" y="350" width="50" height="50" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Show_Exception" bpmnElement="Task_Show_Exception"><dc:Bounds x="2370" y="340" width="150" height="70" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_Cancel" bpmnElement="Gateway_Cancel" isMarkerVisible="true"><dc:Bounds x="2560" y="350" width="50" height="50" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Check_Cancellation_Eligibility" bpmnElement="Task_Check_Cancellation_Eligibility"><dc:Bounds x="2650" y="320" width="180" height="70" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_Cancellation_Allowed" bpmnElement="Gateway_Cancellation_Allowed" isMarkerVisible="true"><dc:Bounds x="2870" y="330" width="50" height="50" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Proposed_Cancel" bpmnElement="Task_Proposed_Cancel"><dc:Bounds x="2960" y="310" width="145" height="70" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_End_Cancelled" bpmnElement="End_Cancelled"><dc:Bounds x="3140" y="95" width="36" height="36" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_Eligible_Recovery" bpmnElement="Gateway_Eligible_Recovery" isMarkerVisible="true"><dc:Bounds x="2660" y="480" width="50" height="50" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_End_Exception_Queued" bpmnElement="End_Exception_Queued"><dc:Bounds x="3370" y="95" width="36" height="36" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_Retries_Used" bpmnElement="Gateway_Retries_Used" isMarkerVisible="true"><dc:Bounds x="2790" y="480" width="50" height="50" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Retry_1" bpmnElement="Task_Retry_1"><dc:Bounds x="2890" y="430" width="115" height="55" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Dispatch_Retry1" bpmnElement="Task_Dispatch_Retry1"><dc:Bounds x="3040" y="430" width="135" height="55" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Retry_2" bpmnElement="Task_Retry_2"><dc:Bounds x="2890" y="520" width="115" height="55" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Dispatch_Retry2" bpmnElement="Task_Dispatch_Retry2"><dc:Bounds x="3040" y="520" width="135" height="55" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Escalate" bpmnElement="Task_Escalate"><dc:Bounds x="2360" y="500" width="155" height="70" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Review_Recovery_Evidence" bpmnElement="Task_Review_Recovery_Evidence"><dc:Bounds x="2550" y="625" width="170" height="70" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_End_Escalated" bpmnElement="End_Escalated"><dc:Bounds x="2800" y="95" width="36" height="36" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Annotation_Cancellation_Origins" bpmnElement="Annotation_Cancellation_Origins"><dc:Bounds x="2650" y="545" width="320" height="45" /></bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Shape_Start_Event_Intake" bpmnElement="Start_Event_Intake"><dc:Bounds x="1100" y="872" width="36" height="36" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Intake_Lookup_Event_Context" bpmnElement="Task_Intake_Lookup_Event_Context"><dc:Bounds x="1170" y="850" width="200" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_Intake_Context_Valid" bpmnElement="Gateway_Intake_Context_Valid" isMarkerVisible="true"><dc:Bounds x="1410" y="865" width="50" height="50" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_Duplicate_Event" bpmnElement="Gateway_Duplicate_Event" isMarkerVisible="true"><dc:Bounds x="1520" y="865" width="50" height="50" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Return_Duplicate" bpmnElement="Task_Return_Duplicate"><dc:Bounds x="1500" y="930" width="180" height="55" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_End_Intake_Duplicate" bpmnElement="End_Intake_Duplicate"><dc:Bounds x="1720" y="940" width="36" height="36" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Validate_WCS_Event" bpmnElement="Task_Validate_WCS_Event"><dc:Bounds x="1610" y="850" width="190" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_Event_Valid" bpmnElement="Gateway_Event_Valid" isMarkerVisible="true"><dc:Bounds x="1840" y="865" width="50" height="50" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Record_Invalid_Event" bpmnElement="Task_Record_Invalid_Event"><dc:Bounds x="1810" y="930" width="210" height="55" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_End_Intake_Invalid" bpmnElement="End_Intake_Invalid"><dc:Bounds x="2060" y="940" width="36" height="36" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Intake_Route_Validated_Event" bpmnElement="Task_Intake_Route_Validated_Event"><dc:Bounds x="1930" y="850" width="190" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_End_Intake_Routed" bpmnElement="End_Intake_Routed"><dc:Bounds x="2160" y="872" width="36" height="36" /></bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Shape_Start_WCS_Command" bpmnElement="Start_WCS_Command"><dc:Bounds x="1210" y="1120" width="36" height="36" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Execute_Simulated" bpmnElement="Task_Execute_Simulated"><dc:Bounds x="1310" y="1100" width="155" height="75" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_WCS_Outcome" bpmnElement="Gateway_WCS_Outcome" isMarkerVisible="true"><dc:Bounds x="1510" y="1112" width="50" height="50" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Send_Completed" bpmnElement="Task_Send_Completed"><dc:Bounds x="1620" y="1065" width="155" height="55" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_End_WCS_Completed" bpmnElement="End_WCS_Completed"><dc:Bounds x="1830" y="1075" width="36" height="36" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Send_Failed" bpmnElement="Task_Send_Failed"><dc:Bounds x="1620" y="1130" width="155" height="55" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_End_WCS_Failed" bpmnElement="End_WCS_Failed"><dc:Bounds x="1830" y="1140" width="36" height="36" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Send_Timeout" bpmnElement="Task_Send_Timeout"><dc:Bounds x="1620" y="1195" width="155" height="30" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_End_WCS_Timeout" bpmnElement="End_WCS_Timeout"><dc:Bounds x="1830" y="1195" width="36" height="36" /></bpmndi:BPMNShape>
+
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_01" bpmnElement="Flow_Ops_01"><di:waypoint x="146" y="113" /><di:waypoint x="180" y="112" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_02" bpmnElement="Flow_Ops_02"><di:waypoint x="325" y="112" /><di:waypoint x="342" y="112" /><di:waypoint x="342" y="260" /><di:waypoint x="360" y="260" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_03" bpmnElement="Flow_Ops_03"><di:waypoint x="515" y="260" /><di:waypoint x="550" y="260" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_04" bpmnElement="Flow_Ops_04"><di:waypoint x="600" y="260" /><di:waypoint x="635" y="260" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_05" bpmnElement="Flow_Ops_05"><di:waypoint x="575" y="285" /><di:waypoint x="575" y="375" /><di:waypoint x="650" y="375" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_06" bpmnElement="Flow_Ops_06"><di:waypoint x="790" y="260" /><di:waypoint x="825" y="260" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_07" bpmnElement="Flow_Ops_07"><di:waypoint x="875" y="260" /><di:waypoint x="910" y="260" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_08" bpmnElement="Flow_Ops_08"><di:waypoint x="850" y="285" /><di:waypoint x="850" y="375" /><di:waypoint x="815" y="375" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_PreTask_To_End" bpmnElement="Flow_Ops_PreTask_To_End"><di:waypoint x="815" y="375" /><di:waypoint x="918" y="375" /><di:waypoint x="918" y="131" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_09" bpmnElement="Flow_Ops_09"><di:waypoint x="1065" y="260" /><di:waypoint x="1100" y="260" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_10" bpmnElement="Flow_Ops_10"><di:waypoint x="1150" y="260" /><di:waypoint x="1200" y="260" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_11" bpmnElement="Flow_Ops_11"><di:waypoint x="1125" y="285" /><di:waypoint x="1125" y="375" /><di:waypoint x="1210" y="375" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Initial_Failure_To_Check" bpmnElement="Flow_Ops_Initial_Failure_To_Check"><di:waypoint x="1365" y="375" /><di:waypoint x="2280" y="375" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_13" bpmnElement="Flow_Ops_13"><di:waypoint x="1355" y="260" /><di:waypoint x="1410" y="260" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_14" bpmnElement="Flow_Ops_14"><di:waypoint x="1565" y="260" /><di:waypoint x="1980" y="260" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Completion_To_Apply" bpmnElement="Flow_Ops_Completion_To_Apply"><di:waypoint x="2030" y="260" /><di:waypoint x="2070" y="260" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Apply_To_Commit" bpmnElement="Flow_Ops_Apply_To_Commit"><di:waypoint x="2215" y="260" /><di:waypoint x="2260" y="260" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Commit_To_End" bpmnElement="Flow_Ops_Commit_To_End"><di:waypoint x="2405" y="260" /><di:waypoint x="2468" y="260" /><di:waypoint x="2468" y="131" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Failure_To_Update" bpmnElement="Flow_Ops_Failure_To_Update"><di:waypoint x="2005" y="285" /><di:waypoint x="2005" y="375" /><di:waypoint x="2070" y="375" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Timeout_To_Update" bpmnElement="Flow_Ops_Timeout_To_Update"><di:waypoint x="1980" y="260" /><di:waypoint x="1950" y="260" /><di:waypoint x="1950" y="405" /><di:waypoint x="2070" y="405" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Update_To_Third_Check" bpmnElement="Flow_Ops_Update_To_Third_Check"><di:waypoint x="2240" y="375" /><di:waypoint x="2280" y="375" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Third_Yes" bpmnElement="Flow_Ops_Third_Yes"><di:waypoint x="2305" y="400" /><di:waypoint x="2305" y="535" /><di:waypoint x="2360" y="535" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Escalate_To_Maintenance" bpmnElement="Flow_Ops_Escalate_To_Maintenance"><di:waypoint x="2515" y="535" /><di:waypoint x="2635" y="535" /><di:waypoint x="2635" y="625" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Maintenance_To_End" bpmnElement="Flow_Ops_Maintenance_To_End"><di:waypoint x="2720" y="660" /><di:waypoint x="2818" y="660" /><di:waypoint x="2818" y="131" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Third_No" bpmnElement="Flow_Ops_Third_No"><di:waypoint x="2330" y="375" /><di:waypoint x="2370" y="375" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Exception_To_Cancel" bpmnElement="Flow_Ops_Exception_To_Cancel"><di:waypoint x="2520" y="375" /><di:waypoint x="2560" y="375" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Cancel_Yes" bpmnElement="Flow_Ops_Cancel_Yes"><di:waypoint x="2610" y="375" /><di:waypoint x="2650" y="355" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Check_To_Cancel_Gateway" bpmnElement="Flow_Ops_Check_To_Cancel_Gateway"><di:waypoint x="2830" y="355" /><di:waypoint x="2870" y="355" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Cancel_Allowed" bpmnElement="Flow_Ops_Cancel_Allowed"><di:waypoint x="2920" y="355" /><di:waypoint x="2960" y="345" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Cancel_To_End" bpmnElement="Flow_Ops_Cancel_To_End"><di:waypoint x="3105" y="345" /><di:waypoint x="3158" y="345" /><di:waypoint x="3158" y="131" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Cancel_Rejected" bpmnElement="Flow_Ops_Cancel_Rejected"><di:waypoint x="2895" y="330" /><di:waypoint x="2895" y="160" /><di:waypoint x="3388" y="160" /><di:waypoint x="3388" y="131" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Cancel_No" bpmnElement="Flow_Ops_Cancel_No"><di:waypoint x="2585" y="400" /><di:waypoint x="2585" y="505" /><di:waypoint x="2660" y="505" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Recovery_No" bpmnElement="Flow_Ops_Recovery_No"><di:waypoint x="2685" y="530" /><di:waypoint x="2685" y="585" /><di:waypoint x="3388" y="585" /><di:waypoint x="3388" y="131" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Recovery_Yes" bpmnElement="Flow_Ops_Recovery_Yes"><di:waypoint x="2710" y="505" /><di:waypoint x="2790" y="505" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Retry_Zero" bpmnElement="Flow_Ops_Retry_Zero"><di:waypoint x="2815" y="480" /><di:waypoint x="2815" y="457" /><di:waypoint x="2890" y="457" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Retry1_To_Dispatch" bpmnElement="Flow_Ops_Retry1_To_Dispatch"><di:waypoint x="3005" y="457" /><di:waypoint x="3040" y="457" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Retry1_To_Wait" bpmnElement="Flow_Ops_Retry1_To_Wait"><di:waypoint x="3175" y="457" /><di:waypoint x="3210" y="457" /><di:waypoint x="3210" y="305" /><di:waypoint x="1488" y="305" /><di:waypoint x="1488" y="300" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Retry_One" bpmnElement="Flow_Ops_Retry_One"><di:waypoint x="2815" y="530" /><di:waypoint x="2815" y="547" /><di:waypoint x="2890" y="547" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Retry2_To_Dispatch" bpmnElement="Flow_Ops_Retry2_To_Dispatch"><di:waypoint x="3005" y="547" /><di:waypoint x="3040" y="547" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Retry2_To_Wait" bpmnElement="Flow_Ops_Retry2_To_Wait"><di:waypoint x="3175" y="547" /><di:waypoint x="3220" y="547" /><di:waypoint x="3220" y="310" /><di:waypoint x="1495" y="310" /><di:waypoint x="1495" y="300" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Retry_Exhausted" bpmnElement="Flow_Ops_Retry_Exhausted"><di:waypoint x="2840" y="505" /><di:waypoint x="3388" y="505" /><di:waypoint x="3388" y="131" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Association_Cancellation_Origins" bpmnElement="Association_Cancellation_Origins"><di:waypoint x="2740" y="390" /><di:waypoint x="2740" y="545" /></bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Edge_Flow_Intake_Start_To_Lookup" bpmnElement="Flow_Intake_Start_To_Lookup"><di:waypoint x="1136" y="890" /><di:waypoint x="1170" y="890" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Intake_Lookup_To_Context" bpmnElement="Flow_Intake_Lookup_To_Context"><di:waypoint x="1370" y="890" /><di:waypoint x="1410" y="890" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Intake_Context_Invalid" bpmnElement="Flow_Intake_Context_Invalid"><di:waypoint x="1435" y="915" /><di:waypoint x="1435" y="995" /><di:waypoint x="1915" y="995" /><di:waypoint x="1915" y="985" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Intake_Context_Valid" bpmnElement="Flow_Intake_Context_Valid"><di:waypoint x="1460" y="890" /><di:waypoint x="1520" y="890" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_15" bpmnElement="Flow_Ops_15"><di:waypoint x="1545" y="915" /><di:waypoint x="1545" y="930" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Duplicate_To_Wait" bpmnElement="Flow_Ops_Duplicate_To_Wait"><di:waypoint x="1680" y="958" /><di:waypoint x="1720" y="958" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_17" bpmnElement="Flow_Ops_17"><di:waypoint x="1570" y="890" /><di:waypoint x="1610" y="890" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Event_To_Validation_Gateway" bpmnElement="Flow_Ops_Event_To_Validation_Gateway"><di:waypoint x="1800" y="890" /><di:waypoint x="1840" y="890" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Invalid_Event" bpmnElement="Flow_Ops_Invalid_Event"><di:waypoint x="1865" y="915" /><di:waypoint x="1865" y="930" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Invalid_To_Wait" bpmnElement="Flow_Ops_Invalid_To_Wait"><di:waypoint x="2020" y="958" /><di:waypoint x="2060" y="958" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ops_Valid_Event" bpmnElement="Flow_Ops_Valid_Event"><di:waypoint x="1890" y="890" /><di:waypoint x="1930" y="890" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Intake_Route_To_End" bpmnElement="Flow_Intake_Route_To_End"><di:waypoint x="2120" y="890" /><di:waypoint x="2160" y="890" /></bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Edge_Flow_WCS_01" bpmnElement="Flow_WCS_01"><di:waypoint x="1246" y="1138" /><di:waypoint x="1310" y="1138" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_WCS_02" bpmnElement="Flow_WCS_02"><di:waypoint x="1465" y="1138" /><di:waypoint x="1510" y="1137" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_WCS_03" bpmnElement="Flow_WCS_03"><di:waypoint x="1535" y="1112" /><di:waypoint x="1535" y="1092" /><di:waypoint x="1620" y="1092" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_WCS_04" bpmnElement="Flow_WCS_04"><di:waypoint x="1775" y="1092" /><di:waypoint x="1830" y="1093" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_WCS_05" bpmnElement="Flow_WCS_05"><di:waypoint x="1560" y="1137" /><di:waypoint x="1620" y="1157" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_WCS_06" bpmnElement="Flow_WCS_06"><di:waypoint x="1775" y="1157" /><di:waypoint x="1830" y="1158" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_WCS_07" bpmnElement="Flow_WCS_07"><di:waypoint x="1535" y="1162" /><di:waypoint x="1535" y="1210" /><di:waypoint x="1620" y="1210" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_WCS_08" bpmnElement="Flow_WCS_08"><di:waypoint x="1775" y="1210" /><di:waypoint x="1830" y="1213" /></bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Edge_Message_Command_Initial" bpmnElement="Message_Command_Initial"><di:waypoint x="1278" y="300" /><di:waypoint x="1228" y="1120" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Message_Command_Retry1" bpmnElement="Message_Command_Retry1"><di:waypoint x="3108" y="485" /><di:waypoint x="1228" y="1120" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Message_Command_Retry2" bpmnElement="Message_Command_Retry2"><di:waypoint x="3108" y="575" /><di:waypoint x="1228" y="1120" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Message_Completion" bpmnElement="Message_Completion"><di:waypoint x="1698" y="1065" /><di:waypoint x="1118" y="908" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Message_Failure" bpmnElement="Message_Failure"><di:waypoint x="1698" y="1130" /><di:waypoint x="1118" y="908" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Message_Timeout" bpmnElement="Message_Timeout"><di:waypoint x="1698" y="1195" /><di:waypoint x="1118" y="908" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Message_Route_Validated_Event" bpmnElement="Message_Route_Validated_Event"><di:waypoint x="2025" y="850" /><di:waypoint x="2025" y="760" /><di:waypoint x="1488" y="760" /><di:waypoint x="1488" y="300" /></bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

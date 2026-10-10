@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+                  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+                  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+                  xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+                  id="Definitions_AsIs"
+                  targetNamespace="urn:portfolio:smart-warehouse:as-is">
+  <bpmn:documentation>Personal WMS/WCS portfolio case study using synthetic data. WCS behavior and device events are simulated. This is an assumed illustrative baseline requiring process-owner validation. It is not based on observation or completed interviews, and must not be treated as an approved operating process.</bpmn:documentation>
+  <bpmn:collaboration id="Collaboration_AsIs">
+    <bpmn:participant id="Participant_AsIs" name="Assumed manual inbound operation" processRef="Process_AsIs" />
+  </bpmn:collaboration>
+  <bpmn:process id="Process_AsIs" name="AS-IS assumed manual inbound" isExecutable="false">
+    <bpmn:documentation>Assumed illustrative baseline requiring process-owner validation. The sequence represents synthetic pain-point hypotheses only; no warehouse observation, interview, measurement, or approval occurred.</bpmn:documentation>
+    <bpmn:laneSet id="LaneSet_AsIs">
+      <bpmn:lane id="Lane_AsIs_Operator" name="Inbound Operator">
+        <bpmn:flowNodeRef>Start_AsIs</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Manual_Check</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Spreadsheet_Lookup</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Verbal_Coordination</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Move_Pallet</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_Late_Exception</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_AsIs_Coordinator" name="Warehouse Coordinator">
+        <bpmn:flowNodeRef>Task_Manual_Inventory</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Exception_Unresolved</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>End_Pallet_Stored</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>End_Exception_Unresolved</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="Start_AsIs" name="Pallet arrives" />
+    <bpmn:manualTask id="Task_Manual_Check" name="Manual barcode / SKU / quantity check" />
+    <bpmn:manualTask id="Task_Spreadsheet_Lookup" name="Spreadsheet / location lookup" />
+    <bpmn:manualTask id="Task_Verbal_Coordination" name="Verbal or informal device coordination" />
+    <bpmn:manualTask id="Task_Move_Pallet" name="Move pallet using informal instruction" />
+    <bpmn:exclusiveGateway id="Gateway_Late_Exception" name="Exception discovered late?" />
+    <bpmn:manualTask id="Task_Manual_Inventory" name="Manual inventory update" />
+    <bpmn:manualTask id="Task_Exception_Unresolved" name="Late exception discovery and manual follow-up" />
+    <bpmn:endEvent id="End_Pallet_Stored" name="Pallet stored" />
+    <bpmn:endEvent id="End_Exception_Unresolved" name="Exception unresolved" />
+
+    <bpmn:sequenceFlow id="Flow_AsIs_01" sourceRef="Start_AsIs" targetRef="Task_Manual_Check" />
+    <bpmn:sequenceFlow id="Flow_AsIs_02" sourceRef="Task_Manual_Check" targetRef="Task_Spreadsheet_Lookup" />
+    <bpmn:sequenceFlow id="Flow_AsIs_03" sourceRef="Task_Spreadsheet_Lookup" targetRef="Task_Verbal_Coordination" />
+    <bpmn:sequenceFlow id="Flow_AsIs_04" sourceRef="Task_Verbal_Coordination" targetRef="Task_Move_Pallet" />
+    <bpmn:sequenceFlow id="Flow_AsIs_05" sourceRef="Task_Move_Pallet" targetRef="Gateway_Late_Exception" />
+    <bpmn:sequenceFlow id="Flow_AsIs_06" name="No" sourceRef="Gateway_Late_Exception" targetRef="Task_Manual_Inventory" />
+    <bpmn:sequenceFlow id="Flow_AsIs_07" sourceRef="Task_Manual_Inventory" targetRef="End_Pallet_Stored" />
+    <bpmn:sequenceFlow id="Flow_AsIs_08" name="Yes" sourceRef="Gateway_Late_Exception" targetRef="Task_Exception_Unresolved" />
+    <bpmn:sequenceFlow id="Flow_AsIs_09" sourceRef="Task_Exception_Unresolved" targetRef="End_Exception_Unresolved" />
+  </bpmn:process>
+
+  <bpmndi:BPMNDiagram id="Diagram_AsIs">
+    <bpmndi:BPMNPlane id="Plane_AsIs" bpmnElement="Collaboration_AsIs">
+      <bpmndi:BPMNShape id="Shape_Participant_AsIs" bpmnElement="Participant_AsIs" isHorizontal="true">
+        <dc:Bounds x="80" y="80" width="1420" height="340" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Lane_AsIs_Operator" bpmnElement="Lane_AsIs_Operator" isHorizontal="true">
+        <dc:Bounds x="110" y="80" width="1390" height="170" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Lane_AsIs_Coordinator" bpmnElement="Lane_AsIs_Coordinator" isHorizontal="true">
+        <dc:Bounds x="110" y="250" width="1390" height="170" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Start_AsIs" bpmnElement="Start_AsIs"><dc:Bounds x="150" y="145" width="36" height="36" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Manual_Check" bpmnElement="Task_Manual_Check"><dc:Bounds x="230" y="120" width="150" height="85" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Spreadsheet_Lookup" bpmnElement="Task_Spreadsheet_Lookup"><dc:Bounds x="430" y="120" width="150" height="85" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Verbal_Coordination" bpmnElement="Task_Verbal_Coordination"><dc:Bounds x="630" y="120" width="160" height="85" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Move_Pallet" bpmnElement="Task_Move_Pallet"><dc:Bounds x="840" y="120" width="160" height="85" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_Late_Exception" bpmnElement="Gateway_Late_Exception" isMarkerVisible="true"><dc:Bounds x="1050" y="137" width="50" height="50" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Manual_Inventory" bpmnElement="Task_Manual_Inventory"><dc:Bounds x="1160" y="285" width="145" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Exception_Unresolved" bpmnElement="Task_Exception_Unresolved"><dc:Bounds x="940" y="285" width="160" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_End_Pallet_Stored" bpmnElement="End_Pallet_Stored"><dc:Bounds x="1360" y="307" width="36" height="36" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_End_Exception_Unresolved" bpmnElement="End_Exception_Unresolved"><dc:Bounds x="1120" y="307" width="36" height="36" /></bpmndi:BPMNShape>
+
+      <bpmndi:BPMNEdge id="Edge_Flow_AsIs_01" bpmnElement="Flow_AsIs_01"><di:waypoint x="186" y="163" /><di:waypoint x="230" y="163" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_AsIs_02" bpmnElement="Flow_AsIs_02"><di:waypoint x="380" y="163" /><di:waypoint x="430" y="163" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_AsIs_03" bpmnElement="Flow_AsIs_03"><di:waypoint x="580" y="163" /><di:waypoint x="630" y="163" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_AsIs_04" bpmnElement="Flow_AsIs_04"><di:waypoint x="790" y="163" /><di:waypoint x="840" y="163" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_AsIs_05" bpmnElement="Flow_AsIs_05"><di:waypoint x="1000" y="163" /><di:waypoint x="1050" y="162" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_AsIs_06" bpmnElement="Flow_AsIs_06"><di:waypoint x="1075" y="187" /><di:waypoint x="1075" y="240" /><di:waypoint x="1232" y="240" /><di:waypoint x="1232" y="285" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_AsIs_07" bpmnElement="Flow_AsIs_07"><di:waypoint x="1305" y="325" /><di:waypoint x="1360" y="325" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_AsIs_08" bpmnElement="Flow_AsIs_08"><di:waypoint x="1075" y="187" /><di:waypoint x="1075" y="285" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_AsIs_09" bpmnElement="Flow_AsIs_09"><di:waypoint x="1100" y="325" /><di:waypoint x="1120" y="325" /></bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

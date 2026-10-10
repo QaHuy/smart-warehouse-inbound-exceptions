@@ -1,0 +1,742 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Smart Warehouse Inbound and Exception Management API",
+    "version": "0.1.0",
+    "description": "Proposed local API contract for a personal portfolio simulator using synthetic data. WCS behavior and device events are simulated."
+  },
+  "x-portfolio-note": "This .yaml file deliberately uses JSON-compatible YAML 1.2 so the complete contract can be parsed portably with Python json.loads. It defines no server, authentication claim, external reference, or connected service.",
+  "paths": {
+    "/pallets": {
+      "post": {
+        "operationId": "createInboundPallet",
+        "summary": "Validate and create a synthetic inbound pallet",
+        "description": "Creates no partial pallet or task when receipt validation, identity, or compatible-capacity checks fail.",
+        "x-requirements": ["FR-01", "FR-02", "FR-03", "FR-04", "FR-05"],
+        "x-business-rules": ["BR-01", "BR-02", "BR-03", "BR-04"],
+        "parameters": [
+          {"$ref": "#/components/parameters/CorrelationId"}
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {"$ref": "#/components/schemas/PalletCreateRequest"},
+              "example": {
+                "pallet_id": "PLT-SYN-101",
+                "receipt_barcode": "RCPT000101",
+                "sku_id": "SKU-DEMO-A",
+                "lot_code": "LOT-101",
+                "quantity": 10
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Synthetic pallet and validated movement task created.",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/PalletEnvelope"},
+                "example": {
+                  "ok": true,
+                  "value": {
+                    "pallet_id": "PLT-SYN-101",
+                    "receipt_barcode": "RCPT000101",
+                    "sku_id": "SKU-DEMO-A",
+                    "lot_code": "LOT-101",
+                    "quantity": 10,
+                    "received_at": "2026-01-01T00:00:00Z",
+                    "current_location_id": null,
+                    "task_id": "TASK-SYN-101",
+                    "destination_location_id": "LOC-DEMO-A01"
+                  }
+                }
+              }
+            }
+          },
+          "400": {"$ref": "#/components/responses/ValidationError"},
+          "409": {"$ref": "#/components/responses/ConflictError"},
+          "422": {"$ref": "#/components/responses/NoAvailableLocationError"}
+        }
+      }
+    },
+    "/tasks/{taskId}/dispatch": {
+      "post": {
+        "operationId": "dispatchMovementTask",
+        "summary": "Dispatch a validated task to a simulated device",
+        "description": "Attempt 0 is the initial dispatch. An offline simulator records failure evidence without claiming execution.",
+        "x-requirements": ["FR-06", "FR-08"],
+        "x-business-rules": ["BR-05", "BR-08", "BR-09"],
+        "parameters": [
+          {"$ref": "#/components/parameters/CorrelationId"},
+          {"$ref": "#/components/parameters/TaskId"}
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {"$ref": "#/components/schemas/DispatchRequest"},
+              "example": {"device_id": "DEV-DEMO-CONV"}
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Command persisted and eligible task dispatched.",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/DispatchEnvelope"},
+                "example": {
+                  "ok": true,
+                  "value": {
+                    "task": {
+                      "task_id": "TASK-SYN-101",
+                      "pallet_id": "PLT-SYN-101",
+                      "destination_location_id": "LOC-DEMO-A01",
+                      "device_id": "DEV-DEMO-CONV",
+                      "state": "DISPATCHED",
+                      "retry_count": 0,
+                      "failure_count": 0,
+                      "correlation_id": "CORR-SYN-101",
+                      "created_at": "2026-01-01T00:00:00Z",
+                      "validated_at": "2026-01-01T00:00:05Z",
+                      "dispatched_at": "2026-01-01T00:00:10Z",
+                      "completed_at": null
+                    },
+                    "command": {
+                      "command_id": "CMD-SYN-101",
+                      "task_id": "TASK-SYN-101",
+                      "device_id": "DEV-DEMO-CONV",
+                      "attempt_number": 0,
+                      "command_status": "SENT",
+                      "correlation_id": "CORR-SYN-101",
+                      "sent_at": "2026-01-01T00:00:10Z"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {"$ref": "#/components/responses/NotFoundError"},
+          "409": {"$ref": "#/components/responses/InvalidTransitionError"},
+          "503": {"$ref": "#/components/responses/DeviceOfflineError"}
+        }
+      }
+    },
+    "/wcs/events": {
+      "post": {
+        "operationId": "applySimulatedWcsEvent",
+        "summary": "Apply or de-duplicate a simulated WCS event",
+        "description": "The event_id is checked before transition evaluation. A replay is successful with duplicate true and no second mutation.",
+        "x-requirements": ["FR-07", "FR-08", "FR-10"],
+        "x-business-rules": ["BR-05", "BR-06", "BR-07", "BR-09"],
+        "parameters": [
+          {"$ref": "#/components/parameters/CorrelationId"}
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {"$ref": "#/components/schemas/WcsEventRequest"},
+              "example": {
+                "event_id": "EVT-SYN-101",
+                "task_id": "TASK-SYN-101",
+                "device_id": "DEV-DEMO-CONV",
+                "event_type": "TASK_COMPLETED",
+                "correlation_id": "CORR-SYN-101",
+                "event_at": "2026-01-01T00:02:10Z",
+                "simulated": true,
+                "payload": {"result": "synthetic_complete"}
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Event applied once or acknowledged as a duplicate.",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/EventEnvelope"},
+                "examples": {
+                  "applied": {
+                    "summary": "Unique simulated completion applied",
+                    "value": {
+                      "ok": true,
+                      "value": {
+                        "event_id": "EVT-SYN-101",
+                        "task_id": "TASK-SYN-101",
+                        "event_type": "TASK_COMPLETED",
+                        "duplicate": false,
+                        "state_mutated": true,
+                        "inventory_mutated": true
+                      }
+                    }
+                  },
+                  "duplicate": {
+                    "summary": "Replay acknowledged without another mutation",
+                    "value": {
+                      "ok": true,
+                      "value": {
+                        "event_id": "EVT-SYN-101",
+                        "task_id": "TASK-SYN-101",
+                        "event_type": "TASK_COMPLETED",
+                        "duplicate": true,
+                        "state_mutated": false,
+                        "inventory_mutated": false
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {"$ref": "#/components/responses/ValidationError"},
+          "404": {"$ref": "#/components/responses/NotFoundError"},
+          "409": {"$ref": "#/components/responses/InvalidTransitionError"}
+        }
+      }
+    },
+    "/tasks/{taskId}/retry": {
+      "post": {
+        "operationId": "retryMovementTask",
+        "summary": "Redispatch an eligible failed or timed-out task",
+        "description": "Only retries 1 and 2 are permitted. Failure 3 escalates the exception and produces no third retry command.",
+        "x-requirements": ["FR-09"],
+        "x-business-rules": ["BR-05", "BR-08", "BR-09"],
+        "parameters": [
+          {"$ref": "#/components/parameters/CorrelationId"},
+          {"$ref": "#/components/parameters/TaskId"}
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {"$ref": "#/components/schemas/RetryRequest"},
+              "example": {"reason": "Synthetic recovery evidence reviewed."}
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Eligible retry dispatched.",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/TaskEnvelope"},
+                "example": {
+                  "ok": true,
+                  "value": {
+                    "task_id": "TASK-SYN-102",
+                    "pallet_id": "PLT-SYN-102",
+                    "destination_location_id": "LOC-DEMO-A01",
+                    "device_id": "DEV-DEMO-CONV",
+                    "state": "DISPATCHED",
+                    "retry_count": 1,
+                    "failure_count": 1,
+                    "correlation_id": "CORR-SYN-102",
+                    "created_at": "2026-01-01T00:00:00Z",
+                    "validated_at": "2026-01-01T00:00:05Z",
+                    "dispatched_at": "2026-01-01T00:00:10Z",
+                    "completed_at": null
+                  }
+                }
+              }
+            }
+          },
+          "404": {"$ref": "#/components/responses/NotFoundError"},
+          "409": {"$ref": "#/components/responses/RetryConflictError"},
+          "503": {"$ref": "#/components/responses/RetryOfflineError"}
+        }
+      }
+    },
+    "/tasks/{taskId}/cancel": {
+      "post": {
+        "operationId": "cancelMovementTask",
+        "summary": "Cancel a task from a proposed eligible state",
+        "description": "Cancellation from COMPLETED, CANCELLED, or an undocumented origin returns an error without state or inventory mutation.",
+        "x-requirements": ["FR-09"],
+        "x-business-rules": ["BR-05", "BR-06"],
+        "parameters": [
+          {"$ref": "#/components/parameters/CorrelationId"},
+          {"$ref": "#/components/parameters/TaskId"}
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {"$ref": "#/components/schemas/CancelRequest"},
+              "example": {"reason": "Synthetic supervisor cancellation."}
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Eligible task cancelled.",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/TaskEnvelope"},
+                "example": {
+                  "ok": true,
+                  "value": {
+                    "task_id": "TASK-SYN-103",
+                    "pallet_id": "PLT-SYN-103",
+                    "destination_location_id": "LOC-DEMO-A01",
+                    "device_id": "DEV-DEMO-CONV",
+                    "state": "CANCELLED",
+                    "retry_count": 0,
+                    "failure_count": 0,
+                    "correlation_id": "CORR-SYN-103",
+                    "created_at": "2026-01-01T00:00:00Z",
+                    "validated_at": "2026-01-01T00:00:05Z",
+                    "dispatched_at": null,
+                    "completed_at": null
+                  }
+                }
+              }
+            }
+          },
+          "404": {"$ref": "#/components/responses/NotFoundError"},
+          "409": {"$ref": "#/components/responses/CancellationNotAllowedError"}
+        }
+      }
+    },
+    "/tasks": {
+      "get": {
+        "operationId": "listMovementTasks",
+        "summary": "List synthetic movement tasks",
+        "description": "Returns read-only task state and correlation evidence.",
+        "x-requirements": ["FR-10"],
+        "x-business-rules": ["BR-05"],
+        "parameters": [
+          {"$ref": "#/components/parameters/CorrelationId"},
+          {
+            "name": "state",
+            "in": "query",
+            "required": false,
+            "schema": {"$ref": "#/components/schemas/TaskState"},
+            "example": "FAILED"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Read-only task list.",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/TaskListEnvelope"},
+                "example": {"ok": true, "value": []}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/inventory": {
+      "get": {
+        "operationId": "listCommittedInventory",
+        "summary": "List committed synthetic inventory movements",
+        "description": "A planned destination is absent until a matching unique completion event authorizes one movement.",
+        "x-requirements": ["FR-10"],
+        "x-business-rules": ["BR-06", "BR-07"],
+        "parameters": [
+          {"$ref": "#/components/parameters/CorrelationId"}
+        ],
+        "responses": {
+          "200": {
+            "description": "Read-only committed inventory list.",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/InventoryListEnvelope"},
+                "example": {
+                  "ok": true,
+                  "value": [
+                    {
+                      "movement_id": "MOV-SYN-101",
+                      "task_id": "TASK-SYN-101",
+                      "pallet_id": "PLT-SYN-101",
+                      "from_location_id": null,
+                      "to_location_id": "LOC-DEMO-A01",
+                      "source_event_id": "EVT-SYN-101",
+                      "committed_at": "2026-01-01T00:02:10Z"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/metrics": {
+      "get": {
+        "operationId": "getSyntheticMetrics",
+        "summary": "Calculate four synthetic dispatched-cohort metrics",
+        "description": "Empty denominators or an empty completed cohort return null; the later UI may display the proposed N/A label.",
+        "x-requirements": ["FR-10"],
+        "x-business-rules": ["BR-10"],
+        "parameters": [
+          {"$ref": "#/components/parameters/CorrelationId"}
+        ],
+        "responses": {
+          "200": {
+            "description": "Synthetic metric values and cohort count.",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/MetricsEnvelope"},
+                "example": {
+                  "ok": true,
+                  "value": {
+                    "dispatched_count": 4,
+                    "completion_rate": 0.5,
+                    "exception_rate": 0.75,
+                    "first_pass_success_rate": 0.25,
+                    "average_simulated_cycle_time_seconds": 120.0
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "parameters": {
+      "CorrelationId": {
+        "name": "X-Correlation-Id",
+        "in": "header",
+        "required": true,
+        "description": "Synthetic request correlation identity; echoed inside error evidence.",
+        "schema": {"type": "string", "minLength": 1},
+        "example": "CORR-SYN-101"
+      },
+      "TaskId": {
+        "name": "taskId",
+        "in": "path",
+        "required": true,
+        "description": "Synthetic movement task identifier.",
+        "schema": {"type": "string", "minLength": 1},
+        "example": "TASK-SYN-101"
+      }
+    },
+    "schemas": {
+      "TaskState": {
+        "type": "string",
+        "enum": ["CREATED", "VALIDATED", "DISPATCHED", "IN_PROGRESS", "COMPLETED", "FAILED", "TIMED_OUT", "CANCELLED"]
+      },
+      "WcsEventType": {
+        "type": "string",
+        "enum": ["TASK_STARTED", "TASK_COMPLETED", "TASK_FAILED", "TASK_TIMEOUT"]
+      },
+      "ErrorCode": {
+        "type": "string",
+        "enum": [
+          "INVALID_BARCODE", "UNKNOWN_OR_INACTIVE_SKU", "INVALID_QUANTITY",
+          "DUPLICATE_PALLET", "NO_AVAILABLE_LOCATION", "DEVICE_OFFLINE", "PALLET_JAM",
+          "TASK_TIMEOUT", "INVALID_TRANSITION", "UNKNOWN_TASK", "DUPLICATE_EVENT",
+          "RETRY_LIMIT_REACHED", "CANCELLATION_NOT_ALLOWED"
+        ]
+      },
+      "PalletCreateRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["pallet_id", "receipt_barcode", "sku_id", "lot_code", "quantity"],
+        "properties": {
+          "pallet_id": {"type": "string", "minLength": 1},
+          "receipt_barcode": {"type": "string", "pattern": "^[A-Z0-9-]+$"},
+          "sku_id": {"type": "string", "minLength": 1},
+          "lot_code": {"type": "string", "minLength": 1},
+          "quantity": {"type": "integer", "minimum": 1}
+        }
+      },
+      "DispatchRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["device_id"],
+        "properties": {"device_id": {"type": "string", "minLength": 1}}
+      },
+      "WcsEventRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["event_id", "task_id", "device_id", "event_type", "correlation_id", "event_at", "simulated"],
+        "properties": {
+          "event_id": {"type": "string", "minLength": 1, "description": "Idempotency key retained for the full local simulator store."},
+          "task_id": {"type": "string", "minLength": 1},
+          "device_id": {"type": "string", "minLength": 1},
+          "event_type": {"$ref": "#/components/schemas/WcsEventType"},
+          "correlation_id": {"type": "string", "minLength": 1},
+          "event_at": {"type": "string", "format": "date-time", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"},
+          "simulated": {"type": "boolean", "const": true, "description": "Always true: WCS/device evidence is simulated."},
+          "payload": {"type": ["object", "null"], "additionalProperties": true}
+        }
+      },
+      "RetryRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["reason"],
+        "properties": {"reason": {"type": "string", "minLength": 1}}
+      },
+      "CancelRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["reason"],
+        "properties": {"reason": {"type": "string", "minLength": 1}}
+      },
+      "Pallet": {
+        "type": "object",
+        "required": ["pallet_id", "receipt_barcode", "sku_id", "lot_code", "quantity", "received_at", "current_location_id", "task_id", "destination_location_id"],
+        "properties": {
+          "pallet_id": {"type": "string"},
+          "receipt_barcode": {"type": "string"},
+          "sku_id": {"type": "string"},
+          "lot_code": {"type": "string"},
+          "quantity": {"type": "integer", "minimum": 1},
+          "received_at": {"type": "string", "format": "date-time", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"},
+          "current_location_id": {"type": ["string", "null"]},
+          "task_id": {"type": "string"},
+          "destination_location_id": {"type": "string"}
+        }
+      },
+      "Task": {
+        "type": "object",
+        "required": ["task_id", "pallet_id", "destination_location_id", "device_id", "state", "retry_count", "failure_count", "correlation_id", "created_at"],
+        "properties": {
+          "task_id": {"type": "string"},
+          "pallet_id": {"type": "string"},
+          "destination_location_id": {"type": "string"},
+          "device_id": {"type": "string"},
+          "state": {"$ref": "#/components/schemas/TaskState"},
+          "retry_count": {"type": "integer", "minimum": 0, "maximum": 2},
+          "failure_count": {"type": "integer", "minimum": 0, "maximum": 3},
+          "correlation_id": {"type": "string"},
+          "created_at": {"type": "string", "format": "date-time", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"},
+          "validated_at": {"type": ["string", "null"], "format": "date-time", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"},
+          "dispatched_at": {"type": ["string", "null"], "format": "date-time", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"},
+          "completed_at": {"type": ["string", "null"], "format": "date-time", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"}
+        }
+      },
+      "DeviceCommand": {
+        "type": "object",
+        "required": ["command_id", "task_id", "device_id", "attempt_number", "command_status", "correlation_id", "sent_at"],
+        "properties": {
+          "command_id": {"type": "string"},
+          "task_id": {"type": "string"},
+          "device_id": {"type": "string"},
+          "attempt_number": {"type": "integer", "minimum": 0, "maximum": 2},
+          "command_status": {"type": "string", "enum": ["CREATED", "SENT", "ACCEPTED", "FAILED", "TIMED_OUT", "CANCELLED"]},
+          "correlation_id": {"type": "string"},
+          "sent_at": {"type": "string", "format": "date-time", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"}
+        }
+      },
+      "DispatchResult": {
+        "type": "object",
+        "required": ["task", "command"],
+        "properties": {
+          "task": {"$ref": "#/components/schemas/Task"},
+          "command": {"$ref": "#/components/schemas/DeviceCommand"}
+        }
+      },
+      "EventResult": {
+        "type": "object",
+        "required": ["event_id", "task_id", "event_type", "duplicate", "state_mutated", "inventory_mutated"],
+        "properties": {
+          "event_id": {"type": "string"},
+          "task_id": {"type": "string"},
+          "event_type": {"$ref": "#/components/schemas/WcsEventType"},
+          "duplicate": {"type": "boolean"},
+          "state_mutated": {"type": "boolean"},
+          "inventory_mutated": {"type": "boolean"}
+        }
+      },
+      "InventoryMovement": {
+        "type": "object",
+        "required": ["movement_id", "task_id", "pallet_id", "from_location_id", "to_location_id", "source_event_id", "committed_at"],
+        "properties": {
+          "movement_id": {"type": "string"},
+          "task_id": {"type": "string"},
+          "pallet_id": {"type": "string"},
+          "from_location_id": {"type": ["string", "null"]},
+          "to_location_id": {"type": "string"},
+          "source_event_id": {"type": "string"},
+          "committed_at": {"type": "string", "format": "date-time", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"}
+        }
+      },
+      "Metrics": {
+        "type": "object",
+        "required": ["dispatched_count", "completion_rate", "exception_rate", "first_pass_success_rate", "average_simulated_cycle_time_seconds"],
+        "properties": {
+          "dispatched_count": {"type": "integer", "minimum": 0},
+          "completion_rate": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+          "exception_rate": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+          "first_pass_success_rate": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+          "average_simulated_cycle_time_seconds": {"type": ["number", "null"], "minimum": 0}
+        }
+      },
+      "Error": {
+        "type": "object",
+        "required": ["code", "message", "correlation_id"],
+        "properties": {
+          "code": {"$ref": "#/components/schemas/ErrorCode"},
+          "message": {"type": "string"},
+          "correlation_id": {"type": "string"}
+        }
+      },
+      "PalletEnvelope": {
+        "type": "object",
+        "required": ["ok", "value"],
+        "properties": {"ok": {"type": "boolean", "const": true}, "value": {"$ref": "#/components/schemas/Pallet"}}
+      },
+      "TaskEnvelope": {
+        "type": "object",
+        "required": ["ok", "value"],
+        "properties": {"ok": {"type": "boolean", "const": true}, "value": {"$ref": "#/components/schemas/Task"}}
+      },
+      "DispatchEnvelope": {
+        "type": "object",
+        "required": ["ok", "value"],
+        "properties": {"ok": {"type": "boolean", "const": true}, "value": {"$ref": "#/components/schemas/DispatchResult"}}
+      },
+      "EventEnvelope": {
+        "type": "object",
+        "required": ["ok", "value"],
+        "properties": {"ok": {"type": "boolean", "const": true}, "value": {"$ref": "#/components/schemas/EventResult"}}
+      },
+      "TaskListEnvelope": {
+        "type": "object",
+        "required": ["ok", "value"],
+        "properties": {"ok": {"type": "boolean", "const": true}, "value": {"type": "array", "items": {"$ref": "#/components/schemas/Task"}}}
+      },
+      "InventoryListEnvelope": {
+        "type": "object",
+        "required": ["ok", "value"],
+        "properties": {"ok": {"type": "boolean", "const": true}, "value": {"type": "array", "items": {"$ref": "#/components/schemas/InventoryMovement"}}}
+      },
+      "MetricsEnvelope": {
+        "type": "object",
+        "required": ["ok", "value"],
+        "properties": {"ok": {"type": "boolean", "const": true}, "value": {"$ref": "#/components/schemas/Metrics"}}
+      },
+      "ErrorEnvelope": {
+        "type": "object",
+        "required": ["ok", "error"],
+        "properties": {"ok": {"type": "boolean", "const": false}, "error": {"$ref": "#/components/schemas/Error"}}
+      },
+      "RetryFailureEvidence": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["task_id", "state", "retry_count", "failure_count", "exception_status", "command_created"],
+        "properties": {
+          "task_id": {"type": "string", "minLength": 1},
+          "state": {"$ref": "#/components/schemas/TaskState"},
+          "retry_count": {"type": "integer", "minimum": 0, "maximum": 2},
+          "failure_count": {"type": "integer", "minimum": 0, "maximum": 3},
+          "exception_status": {"type": "string", "enum": ["open", "resolved", "escalated", "cancelled"]},
+          "command_created": {"type": "boolean"}
+        }
+      },
+      "RetryConflictEvidence": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "state": {"$ref": "#/components/schemas/TaskState"},
+          "retry_count": {"type": "integer", "minimum": 0, "maximum": 2},
+          "failure_count": {"type": "integer", "minimum": 0, "maximum": 3},
+          "exception_status": {"type": "string", "enum": ["open", "resolved", "escalated", "cancelled"]},
+          "state_mutated": {"type": "boolean"},
+          "command_created": {"type": "boolean"},
+          "third_retry_command_created": {"type": "boolean"}
+        }
+      },
+      "RetryOfflineEnvelope": {
+        "type": "object",
+        "required": ["ok", "error", "value"],
+        "properties": {
+          "ok": {"type": "boolean", "const": false},
+          "error": {"$ref": "#/components/schemas/Error"},
+          "value": {"$ref": "#/components/schemas/RetryFailureEvidence"}
+        }
+      },
+      "RetryConflictEnvelope": {
+        "type": "object",
+        "required": ["ok", "error", "value"],
+        "properties": {
+          "ok": {"type": "boolean", "const": false},
+          "error": {"$ref": "#/components/schemas/Error"},
+          "value": {"$ref": "#/components/schemas/RetryConflictEvidence"}
+        }
+      }
+    },
+    "responses": {
+      "ValidationError": {
+        "description": "Receipt or event validation failed.",
+        "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ErrorEnvelope"}, "example": {"ok": false, "error": {"code": "INVALID_QUANTITY", "message": "Quantity must be a positive integer.", "correlation_id": "CORR-SYN-ERR-01"}}}}
+      },
+      "ConflictError": {
+        "description": "Unique pallet identity conflicts with an existing record.",
+        "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ErrorEnvelope"}, "example": {"ok": false, "error": {"code": "DUPLICATE_PALLET", "message": "Synthetic pallet identity already exists.", "correlation_id": "CORR-SYN-ERR-02"}}}}
+      },
+      "NoAvailableLocationError": {
+        "description": "No compatible location remains below capacity.",
+        "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ErrorEnvelope"}, "example": {"ok": false, "error": {"code": "NO_AVAILABLE_LOCATION", "message": "No synthetic compatible capacity is available.", "correlation_id": "CORR-SYN-ERR-03"}}}}
+      },
+      "DeviceOfflineError": {
+        "description": "The selected simulated device is offline.",
+        "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ErrorEnvelope"}, "example": {"ok": false, "error": {"code": "DEVICE_OFFLINE", "message": "The simulated device is offline; failure evidence was recorded.", "correlation_id": "CORR-SYN-ERR-04"}}}}
+      },
+      "InvalidTransitionError": {
+        "description": "The requested event or action is invalid for current task state.",
+        "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ErrorEnvelope"}, "example": {"ok": false, "error": {"code": "INVALID_TRANSITION", "message": "The transition is not documented for the current state.", "correlation_id": "CORR-SYN-ERR-05"}}}}
+      },
+      "RetryLimitError": {
+        "description": "Two retries are already used or failure 3 requires escalation.",
+        "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ErrorEnvelope"}, "example": {"ok": false, "error": {"code": "RETRY_LIMIT_REACHED", "message": "No third retry command is allowed.", "correlation_id": "CORR-SYN-ERR-06"}}}}
+      },
+      "RetryOfflineError": {
+        "description": "Retry attempt 1 or 2 still finds the simulated device offline; failure evidence and an active exception are retained without a new command.",
+        "content": {
+          "application/json": {
+            "schema": {"$ref": "#/components/schemas/RetryOfflineEnvelope"},
+            "example": {
+              "ok": false,
+              "error": {"code": "DEVICE_OFFLINE", "message": "The simulated device remains offline after the eligible retry.", "correlation_id": "CORR-SYN-102"},
+              "value": {"task_id": "TASK-SYN-102", "state": "FAILED", "retry_count": 1, "failure_count": 2, "exception_status": "open", "command_created": false}
+            }
+          }
+        }
+      },
+      "RetryConflictError": {
+        "description": "The retry origin is invalid, or two retries are exhausted and failure 3 is escalated without creating a third retry command.",
+        "content": {
+          "application/json": {
+            "schema": {"$ref": "#/components/schemas/RetryConflictEnvelope"},
+            "examples": {
+              "invalidOrigin": {
+                "summary": "State is not eligible for retry",
+                "value": {
+                  "ok": false,
+                  "error": {"code": "INVALID_TRANSITION", "message": "Retry is not valid from the current task state.", "correlation_id": "CORR-SYN-ERR-09"},
+                  "value": {"state_mutated": false, "command_created": false}
+                }
+              },
+              "retryLimit": {
+                "summary": "Third overall failure escalates with no third retry command",
+                "value": {
+                  "ok": false,
+                  "error": {"code": "RETRY_LIMIT_REACHED", "message": "Two retries are exhausted; failure 3 is escalated and no third retry command is created.", "correlation_id": "CORR-SYN-ERR-10"},
+                  "value": {"state": "FAILED", "retry_count": 2, "failure_count": 3, "exception_status": "escalated", "third_retry_command_created": false}
+                }
+              }
+            }
+          }
+        }
+      },
+      "CancellationNotAllowedError": {
+        "description": "Cancellation is not allowed from the current state.",
+        "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ErrorEnvelope"}, "example": {"ok": false, "error": {"code": "CANCELLATION_NOT_ALLOWED", "message": "Terminal and undocumented origins cannot be cancelled.", "correlation_id": "CORR-SYN-ERR-07"}}}}
+      },
+      "NotFoundError": {
+        "description": "Task correlation did not resolve.",
+        "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ErrorEnvelope"}, "example": {"ok": false, "error": {"code": "UNKNOWN_TASK", "message": "Synthetic task was not found.", "correlation_id": "CORR-SYN-ERR-08"}}}}
+      }
+    }
+  }
+}
