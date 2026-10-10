@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Smart Warehouse BA Case Study</title>
+<meta name="description" content="Business Analysis case study · WMS/WCS inbound putaway by Huy Ha. Requirements, BPMN, traceability, and 14/14 passing UAT on a synthetic WMS/WCS case.">
+<style>
+
+:root {
+  color-scheme: light;
+  --navy-950: #071527; --navy-900: #10243e; --slate-700: #42536a; --slate-600: #5d6b7d;
+  --slate-200: #dce3eb; --slate-100: #eef2f6; --slate-050: #f7f9fb; --white: #ffffff;
+  --blue: #1d5f94; --amber: #9b6100; --amber-bg: #fff4d6; --green: #176b52; --red: #a63c32;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--white); color: var(--navy-950);
+  font-family: Inter, Aptos, "Segoe UI", Arial, sans-serif; line-height: 1.5; }
+code { font-family: Consolas, "Cascadia Mono", monospace; font-size: 0.88em;
+  background: var(--slate-100); padding: 0.05em 0.3em; border-radius: 4px; }
+.eyebrow { text-transform: uppercase; letter-spacing: 0.12em; font-weight: 700; color: var(--blue); }
+.disclosure { background: var(--amber-bg); border-left: 4px solid var(--amber); }
+.tiles { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.tile { background: var(--slate-050); border: 1px solid var(--slate-200); border-radius: 10px; }
+.tile b { display: block; color: var(--navy-900); }
+.tile span { color: var(--slate-600); }
+table { width: 100%; border-collapse: collapse; }
+th { background: var(--navy-900); color: var(--white); text-align: left; font-weight: 600; }
+td, th { border: 1px solid var(--slate-200); vertical-align: top; }
+tr:nth-child(even) td { background: var(--slate-050); }
+figure { margin: 0; }
+figure img { width: 100%; height: auto; border: 1px solid var(--slate-200); border-radius: 8px; display: block; }
+figcaption { color: var(--slate-600); }
+.callout { border-left: 4px solid var(--blue); background: var(--slate-050); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; padding: 0; margin: 0; list-style: none; }
+.chips li { background: var(--slate-100); border-radius: 999px; }
+
+body { font-size: 16px; background: var(--slate-050); }
+.wrap { max-width: 980px; margin: 0 auto; padding: 0 16px; }
+header.hero { background: var(--navy-950); color: var(--white); padding: 48px 0 40px; }
+header.hero .eyebrow { color: #9cc7ec; font-size: 13px; margin: 0 0 12px; }
+header.hero h1 { font-size: clamp(30px, 5vw, 46px); line-height: 1.08; margin: 0 0 12px; letter-spacing: -0.02em; }
+header.hero p.sub { color: var(--slate-200); font-size: 18px; margin: 0 0 24px; max-width: 760px; }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.btn { display: inline-block; padding: 10px 16px; border-radius: 8px; font-weight: 600; text-decoration: none;
+  border: 1px solid #3c5677; color: var(--white); }
+.btn.primary { background: #2f7bbf; border-color: #2f7bbf; }
+.btn:focus-visible, a:focus-visible { outline: 3px solid #f2b84b; outline-offset: 2px; }
+main { padding: 28px 0 56px; }
+.card { background: var(--white); border: 1px solid var(--slate-200); border-radius: 14px; padding: 24px; margin-bottom: 20px; }
+.disclosure { padding: 12px 16px; border-radius: 8px; margin: 0 0 20px; font-size: 15px; }
+.tiles { gap: 12px; margin-bottom: 20px; }
+.tile { padding: 14px; }
+.tile b { font-size: 24px; }
+.tile span { font-size: 13px; }
+.summary-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+.summary-grid h3 { margin-top: 0; }
+h2 { font-size: 26px; margin: 0 0 14px; letter-spacing: -0.01em; }
+h2 .num { color: var(--blue); margin-right: 8px; }
+h3 { font-size: 18px; margin: 22px 0 8px; }
+.table-wrap { overflow-x: auto; margin: 8px 0 16px; }
+table { font-size: 14.5px; min-width: 560px; }
+td, th { padding: 8px 10px; }
+figure { margin: 12px 0 18px; }
+figcaption { font-size: 13.5px; margin-top: 6px; }
+.callout { padding: 6px 16px; border-radius: 8px; margin: 8px 0 16px; }
+.chips li { padding: 4px 12px; font-size: 14px; }
+nav.toc ol { columns: 2; margin: 0; padding-left: 20px; }
+nav.toc a { color: var(--blue); }
+footer { color: var(--slate-600); font-size: 14px; padding: 0 0 40px; }
+footer a { color: var(--blue); }
+@media screen and (max-width: 760px) {
+  .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .summary-grid { grid-template-columns: 1fr; }
+  nav.toc ol { columns: 1; }
+  .card { padding: 18px; }
+}
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+
+/* Print / PDF */
+@page { size: A4; margin: 16mm 15mm 16mm; }
+body.print { background: var(--white); font-size: 10.5pt; }
+body.print header.hero { padding: 0 0 6mm; background: var(--white); color: var(--navy-950); border-bottom: 2px solid var(--navy-900); margin-bottom: 5mm; }
+body.print header.hero .eyebrow { color: var(--blue); }
+body.print header.hero p.sub { color: var(--slate-700); font-size: 12pt; margin-bottom: 3mm; }
+body.print header.hero h1 { font-size: 24pt; }
+body.print .wrap { max-width: none; padding: 0; }
+body.print main { padding: 0; }
+body.print .card { border: 0; padding: 0; margin: 0 0 7mm; background: none; }
+body.print .summary-grid { grid-template-columns: 1fr; gap: 0; }
+body.print .summary-grid h3 { margin-top: 10pt; }
+body.print .chips li { font-size: 9pt; padding: 1pt 7pt; }
+body.print code { white-space: nowrap; }
+body.print table { min-width: 0; font-size: 9pt; }
+body.print td, body.print th { padding: 3pt 5pt; }
+body.print tr, body.print figure, body.print .callout { break-inside: avoid; }
+body.print h2, body.print h3 { break-after: avoid; }
+body.print .tile b { font-size: 16pt; }
+body.print .links { font-size: 9.5pt; color: var(--slate-700); margin: 0; }
+body.print .links a { color: var(--blue); }
+body.print nav.toc { display: none; }
+</style>
+</head>
+<body class="">
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">Business analysis portfolio · Huy Ha</p>
+    <h1>Smart Warehouse Inbound &amp; Exception Management</h1>
+    <p class="sub">Business Analysis case study · WMS/WCS inbound putaway — from problem framing and stakeholder analysis to traceable requirements, process models, and executed UAT.</p>
+    <div class="actions">
+        <a class="btn primary" href="demo/">Open live demo</a>
+        <a class="btn" href="downloads/Smart-Warehouse-BA-Case-Study.pdf">Case study (PDF)</a>
+        <a class="btn" href="downloads/Smart-Warehouse-BA-Case-Study.docx">Case study (Word)</a>
+        <a class="btn" href="downloads/Smart-Warehouse-BA-One-Pager.pdf">One-page summary (PDF)</a>
+        <a class="btn" href="https://github.com/QaHuy/smart-warehouse-inbound-exceptions">Repository</a>
+      </div>
+  </div>
+</header>
+<main class="wrap">
+  <p class="disclosure"><strong>Scope disclosure.</strong> Personal WMS/WCS portfolio case study using synthetic data. WCS behavior and device events are simulated. No interview, site observation, measured benefit, or production system is claimed.</p>
+  <div class="tiles"><div class="tile"><b>4</b><span>business needs</span></div><div class="tile"><b>10 · 10 · 5</b><span>FR · BR · NFR</span></div><div class="tile"><b>12 / 26</b><span>user stories / ACs</span></div><div class="tile"><b>14 / 14</b><span>UAT cases passed</span></div><div class="tile"><b>0</b><span>orphaned requirements</span></div></div>
+  <section class="card" aria-label="Summary">
+    <div class="summary-grid">
+      <div><h3>Problem</h3><p>Inbound checks are fragmented and exception visibility is poor. Barcode, SKU, quantity, duplicate-pallet, capacity, and device checks happen at different points, so nobody can say with confidence whether a pallet is safe to put away, who owns a failed movement, or whether inventory was updated before the pallet actually arrived.</p></div>
+      <div><h3>Goal</h3><p>A traceable pallet receipt and putaway flow with safe recovery: invalid pallets are stopped early, every WMS-to-WCS movement is traceable, exceptions are visible and bounded, and inventory changes <strong>exactly once</strong>, only after verified completion.</p></div>
+      <div><h3>My role</h3><p>Sole business analyst on a self-directed case study: problem framing, stakeholder and discovery planning, process modelling, requirements, data and interface contracts, acceptance criteria, UAT, and a clickable prototype used to validate the rules.</p></div>
+    </div>
+    <h3>What I did</h3>
+    <ul><li>Framed the problem as <strong>4 business needs</strong> and a fixed inbound-only scope; mapped <strong>5 stakeholder personas</strong> with a proposed RACI and a 45-minute interview guide.</li><li>Modelled the assumed <strong>As-Is</strong> and proposed <strong>To-Be</strong> in <strong>BPMN 2.0</strong>, plus a system context, WMS–WCS sequence, and task <strong>state machine</strong>.</li><li>Wrote an <strong>SRS/FSD-lite</strong>: 10 functional requirements, 10 business rules, 5 NFRs, and a 13-code error catalogue.</li><li>Ordered a <strong>12-story backlog</strong> by dependency and operational risk; each story passes an INVEST check and has positive and negative <strong>Given/When/Then</strong> criteria (26 in total).</li><li>Specified the <strong>data and interface contracts</strong>: 9-table SQLite schema with data dictionary, <strong>OpenAPI 3.1</strong> (8 operations), and 10 SQL control and metric queries.</li><li>Validated the rules with a <strong>clickable prototype</strong> and <strong>14 automated UAT cases</strong>, linked end to end in a requirements traceability matrix (BN → FR → BR → US → UAT).</li></ul>
+    <h3>Skills demonstrated</h3>
+    <ul class="chips"><li>Requirements elicitation</li><li>Stakeholder analysis &amp; RACI</li><li>BPMN 2.0</li><li>UML state &amp; sequence diagrams</li><li>SRS / FSD</li><li>Business rules</li><li>User stories (INVEST)</li><li>Acceptance criteria (Given/When/Then)</li><li>Gap analysis</li><li>Requirements traceability matrix</li><li>UAT planning &amp; execution</li><li>OpenAPI</li><li>SQL</li><li>Data dictionary</li><li>Agile backlog prioritisation</li><li>Change control</li></ul>
+  </section>
+  <nav class="toc card" aria-label="Contents"><h2>Contents</h2><ol><li><a href="#context">Context and problem</a></li><li><a href="#stakeholders">Stakeholders and decision rights</a></li><li><a href="#process">Process analysis: As-Is to To-Be</a></li><li><a href="#requirements">Requirements</a></li><li><a href="#decisions">Key decisions and assumptions</a></li><li><a href="#controls">Exception handling and controls</a></li><li><a href="#validation">Validation and results</a></li><li><a href="#limits">Limitations and next steps</a></li><li><a href="#artefacts">Artefact index</a></li></ol></nav>
+  
+    <section class="card section first" id="context" aria-labelledby="context-h">
+      <h2 id="context-h"><span class="num">1.</span>Context and problem</h2>
+      <p>The problem statement above is a <strong>design premise, not a measured baseline</strong>. The consequences below are hypotheses to test in real discovery:</p>
+<ul><li>Invalid pallets entering an automated putaway flow.</li><li>Incomplete movement history between the WMS and the warehouse control system (WCS).</li><li>Late recovery from capacity or device exceptions, with unclear ownership.</li><li>Inventory updated before physical completion, or updated twice.</li></ul>
+<h3>Scope</h3>
+<div class="table-wrap"><table><colgroup><col style="width:50%"><col style="width:50%"></colgroup><thead><tr><th scope="col">In scope</th><th scope="col">Out of scope</th></tr></thead><tbody><tr><td>Barcode, SKU, quantity, and duplicate-pallet validation</td><td>Outbound, cycle count, multi-warehouse</td></tr><tr><td>Deterministic putaway location selection</td><td>Advanced FEFO and production optimisation</td></tr><tr><td>WMS movement task and simulated WCS command/events</td><td>Real ERP, PLC, robot, conveyor, or lift integration</td></tr><tr><td>Exception queue, bounded retry, cancellation, escalation</td><td>Enterprise authentication and production deployment</td></tr><tr><td>Inventory location, audit trail, and synthetic metrics</td><td>Claims about a real baseline or measured benefit</td></tr></tbody></table></div>
+    </section>
+
+    <section class="card section" id="stakeholders" aria-labelledby="stakeholders-h">
+      <h2 id="stakeholders-h"><span class="num">2.</span>Stakeholders and decision rights</h2>
+      <p>Five role archetypes were analysed by influence and impact. They are <strong>proposed for the simulation</strong>, not people who were interviewed; a 45-minute interview guide with neutral questions is ready for a real engagement.</p>
+<div class="table-wrap"><table><colgroup><col style="width:22%"><col style="width:40%"><col style="width:38%"></colgroup><thead><tr><th scope="col">Persona</th><th scope="col">Primary concern</th><th scope="col">Influence / impact</th></tr></thead><tbody><tr><td>Inbound operator</td><td>Enter a pallet correctly and understand the next action or error.</td><td>Medium influence · high impact</td></tr><tr><td>Warehouse supervisor</td><td>Control the queue, retry, cancellation, and escalation.</td><td>High influence · high impact</td></tr><tr><td>Warehouse manager</td><td>See safe flow, exception patterns, and auditable metrics.</td><td>High influence · medium impact</td></tr><tr><td>Integration engineer</td><td>Preserve command/event identity, states, and traceability.</td><td>High influence · high impact</td></tr><tr><td>Maintenance technician</td><td>Diagnose simulated device faults without touching inventory.</td><td>Medium influence · high impact</td></tr></tbody></table></div>
+<h3>Proposed RACI</h3>
+<div class="table-wrap"><table><colgroup><col style="width:36%"><col style="width:12.8%"><col style="width:12.8%"><col style="width:12.8%"><col style="width:12.8%"><col style="width:12.8%"></colgroup><thead><tr><th scope="col">Decision</th><th scope="col">Operator</th><th scope="col">Supervisor</th><th scope="col">Manager</th><th scope="col">Integration</th><th scope="col">Maintenance</th></tr></thead><tbody><tr><td>Receipt fields and operator feedback</td><td>R</td><td>A</td><td>I</td><td>C</td><td>I</td></tr><tr><td>Putaway compatibility and capacity policy</td><td>C</td><td>R</td><td>A</td><td>C</td><td>I</td></tr><tr><td>Retry, cancel, and escalation procedure</td><td>C</td><td>A</td><td>I</td><td>C</td><td>R</td></tr><tr><td>Command/event contract and idempotency</td><td>I</td><td>C</td><td>I</td><td>A/R</td><td>C</td></tr><tr><td>Device diagnostic and recovery evidence</td><td>I</td><td>A</td><td>I</td><td>C</td><td>R</td></tr><tr><td>Synthetic metric meaning</td><td>I</td><td>R</td><td>A</td><td>C</td><td>I</td></tr></tbody></table></div>
+    </section>
+
+    <section class="card section" id="process" aria-labelledby="process-h">
+      <h2 id="process-h"><span class="num">3.</span>Process analysis: As-Is to To-Be</h2>
+      <p>The <strong>assumed As-Is</strong> relies on manual checks, spreadsheet lookups, and informal device coordination, so exceptions surface late and inventory is updated by hand.</p>
+<figure><img src="assets/diagrams/as-is-inbound.png" alt="As-Is BPMN: assumed manual inbound process" width="1430" height="350" loading="lazy"><figcaption>Figure 1 — Assumed As-Is inbound process (BPMN 2.0).</figcaption></figure>
+<p>The <strong>To-Be</strong> moves every check into the WMS, makes each movement traceable, and gives every failure a visible, bounded recovery path.</p>
+<figure><img src="assets/diagrams/to-be-at-a-glance.png" alt="To-Be inbound flow at a glance" width="2400" height="740" loading="lazy"><figcaption>Figure 2 — To-Be flow at a glance. The full BPMN with lanes and message flows is in diagrams/to-be-inbound.bpmn.</figcaption></figure>
+<h3>Gap analysis</h3>
+<div class="table-wrap"><table><colgroup><col style="width:30%"><col style="width:46%"><col style="width:24%"></colgroup><thead><tr><th scope="col">Assumed As-Is</th><th scope="col">To-Be control</th><th scope="col">Requirement</th></tr></thead><tbody><tr><td>Manual barcode / SKU / quantity check</td><td>System validation at receipt with a specific error code per failure</td><td><code>FR-02</code>, <code>BR-01</code>, <code>BR-02</code></td></tr><tr><td>Duplicate pallets can enter the flow</td><td>Unique pallet identity; the original record is preserved</td><td><code>FR-03</code>, <code>BR-03</code></td></tr><tr><td>Spreadsheet location lookup</td><td>Deterministic compatible location with capacity check, or a visible capacity exception</td><td><code>FR-04</code>, <code>BR-04</code></td></tr><tr><td>Verbal or informal device coordination</td><td>Correlated WMS → WCS command and event contract with allowed state transitions</td><td><code>FR-05</code>–<code>FR-07</code>, <code>BR-05</code></td></tr><tr><td>Exceptions discovered late, ownership unclear</td><td>Exception queue; at most two retries, third failure escalates; guarded cancellation</td><td><code>FR-08</code>, <code>FR-09</code>, <code>BR-08</code>, <code>BR-09</code></td></tr><tr><td>Manual inventory update, possibly early or twice</td><td>Inventory committed once, only on a unique valid completion event</td><td><code>FR-07</code>, <code>BR-06</code>, <code>BR-07</code></td></tr><tr><td>No audit trail or reconciled metrics</td><td>Audit trail plus four metrics on a fixed dispatched-task cohort</td><td><code>FR-10</code>, <code>BR-10</code></td></tr></tbody></table></div>
+    </section>
+
+    <section class="card section" id="requirements" aria-labelledby="requirements-h">
+      <h2 id="requirements-h"><span class="num">4.</span>Requirements</h2>
+      <h3>Business needs</h3>
+<div class="table-wrap"><table><colgroup><col style="width:14%"><col style="width:86%"></colgroup><thead><tr><th scope="col">ID</th><th scope="col">Business need</th></tr></thead><tbody><tr><td>BN-01</td><td>Prevent invalid or duplicate pallets from entering automated putaway.</td></tr><tr><td>BN-02</td><td>Make each WMS-to-WCS movement traceable from dispatch to completion.</td></tr><tr><td>BN-03</td><td>Surface device and capacity exceptions for controlled recovery.</td></tr><tr><td>BN-04</td><td>Update inventory location exactly once after verified completion.</td></tr></tbody></table></div>
+<h3>Functional requirements</h3>
+<div class="table-wrap"><table><colgroup><col style="width:14%"><col style="width:60%"><col style="width:26%"></colgroup><thead><tr><th scope="col">ID</th><th scope="col">Requirement</th><th scope="col">Business need</th></tr></thead><tbody><tr><td>FR-01</td><td>Create inbound pallet</td><td>BN-01</td></tr><tr><td>FR-02</td><td>Validate barcode, SKU, and quantity</td><td>BN-01</td></tr><tr><td>FR-03</td><td>Reject duplicate pallet ID</td><td>BN-01</td></tr><tr><td>FR-04</td><td>Select available compatible location deterministically</td><td>BN-01, BN-03</td></tr><tr><td>FR-05</td><td>Create movement task</td><td>BN-02</td></tr><tr><td>FR-06</td><td>Dispatch simulated WCS command</td><td>BN-02, BN-03</td></tr><tr><td>FR-07</td><td>Apply simulated WCS events</td><td>BN-02, BN-04</td></tr><tr><td>FR-08</td><td>Manage exception queue</td><td>BN-03</td></tr><tr><td>FR-09</td><td>Retry, cancel, and escalate</td><td>BN-03</td></tr><tr><td>FR-10</td><td>Expose inventory, audit, and metrics</td><td>BN-02, BN-03, BN-04</td></tr></tbody></table></div>
+<h3>Business rules and non-functional requirements</h3>
+<div class="table-wrap"><table><colgroup><col style="width:50%"><col style="width:50%"></colgroup><thead><tr><th scope="col">Business rules (BR-01 to BR-10)</th><th scope="col">NFRs (NFR-01 to NFR-05)</th></tr></thead><tbody><tr><td>Positive integer quantity · known active SKU · unique pallet ID</td><td>Deterministic processing</td></tr><tr><td>Compatible location below capacity · allowed state transitions</td><td>Auditability</td></tr><tr><td>Completion-gated inventory · idempotent event identity</td><td>Browser accessibility</td></tr><tr><td>Maximum two retries · third-failure escalation</td><td>Local operation</td></tr><tr><td>Metrics calculated on the dispatched-task cohort</td><td>Synthetic-data privacy</td></tr></tbody></table></div>
+<h3>Sample user story (US-01 — Validation)</h3>
+<div class="callout"><p><strong>As an</strong> inbound operator, <strong>I want</strong> immediate validation of barcode, SKU, and quantity <strong>so that</strong> invalid receipt data cannot enter putaway.</p><p><strong>AC-US-01-01 (positive).</strong> Given a new pallet ID, a valid barcode, a known active SKU, one lot, and quantity 10 — when the operator submits — then the WMS creates one pallet record and no movement task yet.</p><p><strong>AC-US-01-02 (negative).</strong> Given a malformed barcode, an unknown or inactive SKU, or a quantity that is blank, fractional, zero, or negative — when submitted — then the WMS returns <code>INVALID_BARCODE</code>, <code>UNKNOWN_OR_INACTIVE_SKU</code>, or <code>INVALID_QUANTITY</code> and creates neither a pallet nor a task.</p></div>
+<p>The backlog orders all 12 stories by <strong>dependency, then operational risk, then user value</strong>: validation and identity first, event idempotency before inventory commit, and evidence before metrics. No numeric scoring is used, because no effort or value inputs exist and invented numbers would be false precision.</p>
+    </section>
+
+    <section class="card section" id="decisions" aria-labelledby="decisions-h">
+      <h2 id="decisions-h"><span class="num">5.</span>Key decisions and assumptions</h2>
+      <div class="table-wrap"><table><colgroup><col style="width:12%"><col style="width:22%"><col style="width:36%"><col style="width:30%"></colgroup><thead><tr><th scope="col">ID</th><th scope="col">Decision</th><th scope="col">Rule</th><th scope="col">Why</th></tr></thead><tbody><tr><td>DEC-01</td><td>Deterministic putaway</td><td>First compatible location below capacity, ordered by zone priority then location code.</td><td>Explainable and testable; no claim of route optimisation.</td></tr><tr><td>DEC-02</td><td>Completion-gated inventory</td><td>Inventory moves only on a valid, unique <code>TASK_COMPLETED</code> event.</td><td>Separates planned movement from physical completion; one audit point.</td></tr><tr><td>DEC-03</td><td>Bounded retry</td><td>Maximum two retries; the third failure escalates to a person.</td><td>Prevents silent infinite retry and makes ownership explicit.</td></tr><tr><td>DEC-04</td><td>UTC ISO 8601 timestamps</td><td>All simulator timestamps use UTC ISO 8601.</td><td>Unambiguous ordering across WMS, WCS, and audit.</td></tr></tbody></table></div>
+<p>Three assumptions are <strong>locked but unvalidated</strong>, each with a validation owner and a revisit trigger: one SKU and lot per pallet (<code>AS-01</code>), positive integer quantity (<code>AS-02</code>), and capacity counted in whole pallets (<code>AS-03</code>). Retry limits, cancellation rights, and RACI remain proposals until a real decision owner confirms them.</p>
+    </section>
+
+    <section class="card section" id="controls" aria-labelledby="controls-h">
+      <h2 id="controls-h"><span class="num">6.</span>Exception handling and controls</h2>
+      <p>Every failure has a code, a visible outcome, and an owner. A task moves through <code>CREATED → VALIDATED → DISPATCHED → IN_PROGRESS → COMPLETED</code>, with <code>FAILED</code>, <code>TIMED_OUT</code>, and <code>CANCELLED</code> reachable only through documented transitions.</p>
+<div class="table-wrap"><table><colgroup><col style="width:34%"><col style="width:66%"></colgroup><thead><tr><th scope="col">Error code</th><th scope="col">Observable outcome</th></tr></thead><tbody><tr><td><code>INVALID_BARCODE</code> / <code>UNKNOWN_OR_INACTIVE_SKU</code> / <code>INVALID_QUANTITY</code></td><td>Receipt rejected; nothing is created.</td></tr><tr><td><code>DUPLICATE_PALLET</code></td><td>Existing record unchanged; new receipt rejected.</td></tr><tr><td><code>NO_AVAILABLE_LOCATION</code></td><td>No dispatch; capacity exception visible to the supervisor.</td></tr><tr><td><code>DEVICE_OFFLINE</code> / <code>PALLET_JAM</code> / <code>TASK_TIMEOUT</code></td><td>Task fails or times out; active exception with a retry, cancel, or escalate path.</td></tr><tr><td><code>RETRY_LIMIT_REACHED</code></td><td>Third failure escalates; no third retry command is sent.</td></tr><tr><td><code>DUPLICATE_EVENT</code></td><td>Acknowledged as duplicate; no second state or inventory change.</td></tr><tr><td><code>INVALID_TRANSITION</code> / <code>UNKNOWN_TASK</code></td><td>Request rejected; state and inventory unchanged; audit retained.</td></tr><tr><td><code>CANCELLATION_NOT_ALLOWED</code></td><td>Cancellation from a terminal or undocumented state is rejected.</td></tr></tbody></table></div>
+<h3>Data and interface contracts</h3>
+<ul><li><strong>Data model:</strong> 9-table SQLite schema with a data dictionary, synthetic seed data, and lineage notes.</li><li><strong>Interface:</strong> OpenAPI 3.1 contract with 8 operations for receipt, task, event, retry, exception, inventory, audit, and metrics.</li><li><strong>Controls:</strong> 6 SQL integrity checks (for example, duplicate pallets, inventory count per completed task, duplicate event IDs) and 4 metric queries.</li></ul>
+<div class="table-wrap"><table><colgroup><col style="width:32%"><col style="width:68%"></colgroup><thead><tr><th scope="col">Metric</th><th scope="col">Definition (dispatched-task cohort)</th></tr></thead><tbody><tr><td>Completion Rate</td><td>completed / dispatched</td></tr><tr><td>Exception Rate</td><td>ever failed or timed out / dispatched</td></tr><tr><td>First Pass Success</td><td>completed with zero retries / dispatched</td></tr><tr><td>Average Simulated Cycle Time</td><td>completed time minus first dispatch time</td></tr></tbody></table></div>
+    </section>
+
+    <section class="card section" id="validation" aria-labelledby="validation-h">
+      <h2 id="validation-h"><span class="num">7.</span>Validation and results</h2>
+      <p>All 14 UAT cases run as automated tests (<code>node --test tests/uat.test.mjs</code>) and <strong>pass</strong>. The traceability matrix covers 4/4 business needs, 10/10 FRs, 10/10 business rules, and 12/12 stories with <strong>0 orphaned requirements</strong>.</p>
+<div class="table-wrap"><table><colgroup><col style="width:13%"><col style="width:37%"><col style="width:40%"><col style="width:10%"></colgroup><thead><tr><th scope="col">Case</th><th scope="col">Scenario</th><th scope="col">Actual result</th><th scope="col">Status</th></tr></thead><tbody><tr><td>UAT-01</td><td>Valid inbound happy path</td><td>Task completed; exactly one inventory movement</td><td>PASS</td></tr><tr><td>UAT-02</td><td>Malformed barcode</td><td><code>INVALID_BARCODE</code>; no pallet created</td><td>PASS</td></tr><tr><td>UAT-03</td><td>Unknown or inactive SKU</td><td><code>UNKNOWN_OR_INACTIVE_SKU</code>; no task created</td><td>PASS</td></tr><tr><td>UAT-04</td><td>Zero quantity</td><td><code>INVALID_QUANTITY</code>; no pallet created</td><td>PASS</td></tr><tr><td>UAT-05</td><td>Duplicate pallet identity</td><td><code>DUPLICATE_PALLET</code>; original quantity preserved</td><td>PASS</td></tr><tr><td>UAT-06</td><td>No compatible capacity</td><td><code>NO_AVAILABLE_LOCATION</code> exception; no task</td><td>PASS</td></tr><tr><td>UAT-07</td><td>Device offline at first dispatch</td><td><code>DEVICE_OFFLINE</code>; failure 1, retry 0, no command</td><td>PASS</td></tr><tr><td>UAT-08</td><td>Simulated pallet jam</td><td><code>FAILED</code> state and <code>PALLET_JAM</code> exception</td><td>PASS</td></tr><tr><td>UAT-09</td><td>Simulated task timeout</td><td><code>TIMED_OUT</code> state and <code>TASK_TIMEOUT</code> exception</td><td>PASS</td></tr><tr><td>UAT-10</td><td>Retry after device recovery</td><td>Redispatched as attempt 1</td><td>PASS</td></tr><tr><td>UAT-11</td><td>Third failure escalation</td><td>Escalated at failure 3; no third retry command</td><td>PASS</td></tr><tr><td>UAT-12</td><td>Cancellation state gate</td><td>Timeout cancellable; completed task rejected</td><td>PASS</td></tr><tr><td>UAT-13</td><td>Duplicate completion event</td><td>Flagged duplicate; still one inventory movement</td><td>PASS</td></tr><tr><td>UAT-14</td><td>Metric reconciliation</td><td>50%, 75%, 25%, and 120 s exactly as expected</td><td>PASS</td></tr></tbody></table></div>
+<figure><img src="assets/03-offline-escalation.png" alt="Prototype: offline retry limit and escalated exception" width="1440" height="1200" loading="lazy"><figcaption>Figure 3 — Prototype: two failed retries, then escalation with no third retry command.</figcaption></figure>
+<figure><img src="assets/02-happy-path-inventory.png" alt="Prototype: inventory committed exactly once with audit trail" width="1440" height="1200" loading="lazy"><figcaption>Figure 4 — Prototype: inventory committed exactly once, with the audit trail behind it.</figcaption></figure>
+    </section>
+
+    <section class="card section" id="limits" aria-labelledby="limits-h">
+      <h2 id="limits-h"><span class="num">8.</span>Limitations and next steps</h2>
+      <h3>What this case study does not prove</h3>
+<ul><li>No warehouse user or domain expert has validated the workflow; real discovery could change rules and priorities.</li><li>The WCS is a deterministic in-memory simulator, not a physical device or a third-party integration.</li><li>Persistence, authentication, concurrency, and production performance are intentionally out of scope.</li></ul>
+<h3>What I would do first in a real engagement</h3>
+<ul><li>Observe inbound work on site and run the interview guide with the five personas.</li><li>Collect real exception examples and validate the As-Is / To-Be flow against them.</li><li>Confirm data and integration contracts with the integration owner.</li><li>Update requirements, decisions, and UAT with named decision owners and sign-off.</li></ul>
+    </section>
+
+    <section class="card section" id="artefacts" aria-labelledby="artefacts-h">
+      <h2 id="artefacts-h"><span class="num">9.</span>Artefact index</h2>
+      <div class="table-wrap"><table><colgroup><col style="width:40%"><col style="width:60%"></colgroup><thead><tr><th scope="col">Artefact</th><th scope="col">Location in the repository</th></tr></thead><tbody><tr><td>Case study brief, stakeholders, assumptions</td><td><code>docs/01</code> – <code>docs/03</code></td></tr><tr><td>SRS/FSD-lite, backlog, user stories</td><td><code>docs/04</code> – <code>docs/06</code></td></tr><tr><td>Traceability matrix, UAT pack, defect and change log</td><td><code>docs/07</code> – <code>docs/09</code></td></tr><tr><td>User guide and 5-minute demo script</td><td><code>docs/10-user-guide-and-demo-script.md</code></td></tr><tr><td>BPMN, context, sequence, and state diagrams</td><td><code>diagrams/</code></td></tr><tr><td>Schema, data dictionary, seed, SQL controls</td><td><code>data/</code></td></tr><tr><td>OpenAPI 3.1 contract</td><td><code>api/openapi.yaml</code></td></tr><tr><td>Prototype and automated tests</td><td><code>prototype/</code>, <code>tests/</code></td></tr></tbody></table></div>
+    </section>
+</main>
+<footer class="wrap">
+  <p>Version 1.0 · 10 October 2026 · All examples are synthetic. Source and full artefacts: <a href="https://github.com/QaHuy/smart-warehouse-inbound-exceptions">https://github.com/QaHuy/smart-warehouse-inbound-exceptions</a></p>
+</footer>
+</body>
+</html>

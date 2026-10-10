@@ -7,6 +7,7 @@
 | Version | Date | Status | Change | Author/reviewer boundary |
 |---|---|---|---|---|
 | 0.1 | 2026-09-08 | Draft for portfolio review | Initial requirements, rules, NFRs, interfaces, errors, and traceability | Prepared by Portfolio author; accountable roles must review before use outside this simulation |
+| 0.2 | 2026-10-10 | Draft for portfolio review | No requirement change; traceability summary and verification table now point at the executed Task 7 evidence instead of describing UAT as pending | Prepared by Portfolio author; accountable roles must still review before use outside this simulation |
 
 This document is neither an operational baseline nor evidence of a warehouse deployment. The behaviors below are requirements for a local synthetic simulator.
 
@@ -353,7 +354,7 @@ Later API and data-contract tasks define field syntax and persistence constraint
 | `BN-03` | `FR-04`, `FR-06`, `FR-08..FR-10` | `BR-04`, `BR-05`, `BR-08..BR-10`, `NFR-02..NFR-05` | `US-03`, `US-05`, `US-09`, `US-10`, `US-12` |
 | `BN-04` | `FR-07`, `FR-10` | `BR-06`, `BR-07`, `BR-10`, `NFR-01`, `NFR-02`, `NFR-04`, `NFR-05` | `US-07`, `US-08`, `US-11`, `US-12` |
 
-The detailed `BN -> FR -> BR -> US -> UAT -> result` matrix and executed evidence belong to Task 7. No UAT result is asserted here.
+The detailed `BN -> FR -> BR -> US -> UAT -> result` matrix and executed evidence belong to Task 7 and are maintained in `docs/07-requirements-traceability-matrix.md` and `docs/08-uat-pack-and-results.md`; this summary does not restate results.
 
 ## Verification methods
 
@@ -363,7 +364,7 @@ The detailed `BN -> FR -> BR -> US -> UAT -> result` matrix and executed evidenc
 | Domain automated test | Validation, deterministic selection, state, retry, idempotency, inventory, and metrics | Uses synthetic fixtures only |
 | Contract/data test | Schema, uniqueness, referential integrity, event identity, and SQL controls | Does not represent an enterprise platform |
 | Static/browser check | Local operation, accessibility checklist, disclosure, and visible states | Manual access-needs review remains necessary |
-| UAT | End-to-end portfolio scenarios and evidence | Scheduled for Task 7; no result exists in this draft |
+| UAT | End-to-end portfolio scenarios and evidence | Executed in Task 7; results and residual limitations are in `docs/08-uat-pack-and-results.md` |
 
 ## Open questions
 

@@ -1,0 +1,2 @@
+# Python test dependencies (the prototype itself has none).
+pytest>=8,<10
