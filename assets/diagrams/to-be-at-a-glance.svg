@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="370" viewBox="0 0 1200 370" font-family="Segoe UI, Inter, Arial, sans-serif">
+  <title>TO-BE inbound flow at a glance (simplified from diagrams/to-be-inbound.bpmn)</title>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#42536a"/>
+    </marker>
+    <marker id="arrow-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#a63c32"/>
+    </marker>
+  </defs>
+  <rect width="1200" height="370" fill="#ffffff"/>
+
+  <text x="27" y="40" font-size="14" font-weight="700" fill="#10243e">Happy path — the WMS owns validation, task state, and the inventory decision</text>
+
+  <!-- Main flow -->
+  <g font-size="12.5" text-anchor="middle">
+    <rect x="27" y="56" width="150" height="88" rx="10" fill="#10243e"/>
+    <text x="102" y="86" fill="#ffffff" font-weight="700" font-size="13.5">1 · Receive</text>
+    <text x="102" y="106" fill="#dce3eb">operator scans</text>
+    <text x="102" y="123" fill="#dce3eb">pallet receipt</text>
+
+    <rect x="193" y="56" width="150" height="88" rx="10" fill="#10243e"/>
+    <text x="268" y="86" fill="#ffffff" font-weight="700" font-size="13.5">2 · Validate</text>
+    <text x="268" y="106" fill="#dce3eb">barcode, SKU, qty,</text>
+    <text x="268" y="123" fill="#dce3eb">unique pallet ID</text>
+
+    <rect x="359" y="56" width="150" height="88" rx="10" fill="#10243e"/>
+    <text x="434" y="86" fill="#ffffff" font-weight="700" font-size="13.5">3 · Select location</text>
+    <text x="434" y="106" fill="#dce3eb">first compatible:</text>
+    <text x="434" y="123" fill="#dce3eb">zone, then code</text>
+
+    <rect x="525" y="56" width="150" height="88" rx="10" fill="#10243e"/>
+    <text x="600" y="86" fill="#ffffff" font-weight="700" font-size="13.5">4 · Create task</text>
+    <text x="600" y="106" fill="#dce3eb">movement task +</text>
+    <text x="600" y="123" fill="#dce3eb">correlation ID</text>
+
+    <rect x="691" y="56" width="150" height="88" rx="10" fill="#10243e"/>
+    <text x="766" y="86" fill="#ffffff" font-weight="700" font-size="13.5">5 · Dispatch</text>
+    <text x="766" y="106" fill="#dce3eb">command to WCS</text>
+    <text x="766" y="123" fill="#dce3eb">(simulated)</text>
+
+    <rect x="857" y="56" width="150" height="88" rx="10" fill="#10243e"/>
+    <text x="932" y="86" fill="#ffffff" font-weight="700" font-size="13.5">6 · Apply event</text>
+    <text x="932" y="106" fill="#dce3eb">valid transition only,</text>
+    <text x="932" y="123" fill="#dce3eb">idempotent event_id</text>
+
+    <rect x="1023" y="56" width="150" height="88" rx="10" fill="#176b52"/>
+    <text x="1098" y="86" fill="#ffffff" font-weight="700" font-size="13.5">7 · Commit</text>
+    <text x="1098" y="106" fill="#e9f6f0">inventory moves</text>
+    <text x="1098" y="123" fill="#e9f6f0">exactly once</text>
+  </g>
+  <g stroke="#42536a" stroke-width="2" marker-end="url(#arrow)">
+    <line x1="177" y1="100" x2="191" y2="100"/>
+    <line x1="343" y1="100" x2="357" y2="100"/>
+    <line x1="509" y1="100" x2="523" y2="100"/>
+    <line x1="675" y1="100" x2="689" y2="100"/>
+    <line x1="841" y1="100" x2="855" y2="100"/>
+    <line x1="1007" y1="100" x2="1021" y2="100"/>
+  </g>
+
+  <g font-size="14" font-weight="700" fill="#a63c32">
+    <text x="27" y="234">Controlled</text>
+    <text x="27" y="253">exception paths</text>
+  </g>
+  <g font-size="12.5" fill="#5d6b7d">
+    <text x="27" y="274">visible, owned,</text>
+    <text x="27" y="291">and bounded</text>
+  </g>
+
+  <!-- Exception branches -->
+  <g stroke="#a63c32" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#arrow-red)">
+    <line x1="268" y1="144" x2="268" y2="208"/>
+    <line x1="434" y1="144" x2="434" y2="208"/>
+    <line x1="740" y1="144" x2="740" y2="208"/>
+    <line x1="932" y1="144" x2="932" y2="208"/>
+  </g>
+  <line x1="800" y1="210" x2="800" y2="148" stroke="#a63c32" stroke-width="2" marker-end="url(#arrow-red)"/>
+  <text x="806" y="176" font-size="12" font-weight="700" fill="#a63c32">retry</text>
+  <line x1="1098" y1="144" x2="1098" y2="208" stroke="#9aa7b7" stroke-width="1.6" stroke-dasharray="2 4" marker-end="url(#arrow)"/>
+
+  <g font-size="12.5" text-anchor="middle" fill="#071527">
+    <rect x="193" y="210" width="150" height="92" rx="10" fill="#fff0ee" stroke="#a63c32" stroke-width="1.5"/>
+    <text x="268" y="234" fill="#a63c32" font-weight="700" font-size="13.5">Reject receipt</text>
+    <text x="268" y="253">invalid barcode, SKU,</text>
+    <text x="268" y="270">qty or duplicate ID</text>
+    <text x="268" y="287">nothing is created</text>
+
+    <rect x="359" y="210" width="150" height="92" rx="10" fill="#fff0ee" stroke="#a63c32" stroke-width="1.5"/>
+    <text x="434" y="234" fill="#a63c32" font-weight="700" font-size="13.5">No capacity</text>
+    <text x="434" y="253">no compatible space</text>
+    <text x="434" y="270">exception is visible</text>
+    <text x="434" y="287">no task is created</text>
+
+    <rect x="691" y="210" width="150" height="92" rx="10" fill="#fff0ee" stroke="#a63c32" stroke-width="1.5"/>
+    <text x="766" y="234" fill="#a63c32" font-weight="700" font-size="13.5">Failure / timeout</text>
+    <text x="766" y="253">offline, jam, timeout</text>
+    <text x="766" y="270">retry at most 2 times</text>
+    <text x="766" y="287">3rd failure escalates</text>
+
+    <rect x="857" y="210" width="150" height="92" rx="10" fill="#fff0ee" stroke="#a63c32" stroke-width="1.5"/>
+    <text x="932" y="234" fill="#a63c32" font-weight="700" font-size="13.5">Duplicate event</text>
+    <text x="932" y="253">acknowledged as</text>
+    <text x="932" y="270">duplicate; no second</text>
+    <text x="932" y="287">state or stock change</text>
+
+    <rect x="1023" y="210" width="150" height="92" rx="10" fill="#eef2f6" stroke="#9aa7b7" stroke-width="1.5"/>
+    <text x="1098" y="234" fill="#10243e" font-weight="700" font-size="13.5">Audit &amp; metrics</text>
+    <text x="1098" y="253">every decision and</text>
+    <text x="1098" y="270">mutation is logged;</text>
+    <text x="1098" y="287">4 reconciled metrics</text>
+  </g>
+
+  <text x="27" y="345" font-size="12" fill="#5d6b7d">Simplified view of diagrams/to-be-inbound.bpmn. Synthetic data; WCS commands and device events are simulated. Cancellation from eligible states is omitted for readability.</text>
+</svg>

@@ -22,7 +22,7 @@ No interview output, site observation, operational baseline, device test, or mea
 |---|---|---|---|
 | PC-01 | The project is a personal WMS/WCS case study using synthetic data; WCS behavior and device events are simulated. | Approved portfolio plan/specification | Every artifact and demo must retain this boundary. |
 | PC-02 | MVP is inbound and putaway only. | Approved portfolio plan/specification | Outbound, cycle count, multi-warehouse, advanced FEFO, production optimization, enterprise authentication, and real integrations remain excluded. |
-| PC-03 | No publication or public URL is authorized. | Approved portfolio plan/specification | Keep delivery local until separate approval is given. |
+| PC-03 | Publication is limited to the public portfolio repository and its static GitHub Pages site; all content stays synthetic. | Revised by the portfolio author on 2026-10-10 after the repository was published. Original constraint: no publication or public URL authorized. | Every published artifact keeps the simulation disclosure and passes the privacy checks before release; no real warehouse, client, or credential material is published. |
 
 ## Case-study assumption log
 

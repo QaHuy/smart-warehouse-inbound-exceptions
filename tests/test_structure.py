@@ -10,6 +10,12 @@ STAKEHOLDERS = PROJECT_ROOT / "docs" / "02-stakeholders-and-interview-guide.md"
 DECISIONS = PROJECT_ROOT / "docs" / "03-assumptions-and-decisions.md"
 
 REQUIRED_FILES = (README, CASE_BRIEF, STAKEHOLDERS, DECISIONS)
+PUBLIC_URL = "https://github.com/QaHuy/smart-warehouse-inbound-exceptions"
+PAGES_URL = "https://qahuy.github.io/smart-warehouse-inbound-exceptions/"
+# The only external URLs the foundation files may contain: the repository and its own Pages site.
+APPROVED_URL = re.compile(
+    rf"(?:{re.escape(PUBLIC_URL)}|{re.escape(PAGES_URL)}[^\s)]*)"
+)
 DISCLOSURE = (
     "Personal WMS/WCS portfolio case study using synthetic data. "
     "WCS behavior and device events are simulated."
@@ -55,13 +61,15 @@ def test_later_identifier_namespaces_are_reserved_once_without_requirements():
     assert not re.search(r"(?m)^- `(FR|BR|NFR|US|UAT)-\d{2}`:", text)
 
 
-def test_readme_has_delivery_legend_and_exact_public_url():
+def test_readme_has_delivery_legend_and_only_approved_urls():
     text = README.read_text(encoding="utf-8")
     for label in ("Implemented", "Simulated", "Designed only"):
         assert label in text
-    public_url = "https://github.com/QaHuy/smart-warehouse-inbound-exceptions"
-    assert f"Public URL: {public_url}" in text
-    assert re.findall(r"https?://[^\s)]+", text) == [public_url]
+    assert f"Public URL: {PUBLIC_URL}" in text
+    urls = re.findall(r"https?://[^\s)]+", text)
+    assert urls.count(PUBLIC_URL) == 1
+    unapproved = [url for url in urls if not APPROVED_URL.fullmatch(url)]
+    assert not unapproved, unapproved
 
 
 def test_readme_links_directly_to_each_foundation_artifact():
@@ -89,8 +97,7 @@ def test_maintenance_recovery_question_is_neutral_and_separates_probe():
 
 
 def test_foundation_contains_no_private_or_local_material():
-    text = _combined_markdown()
-    text = text.replace("https://github.com/QaHuy/smart-warehouse-inbound-exceptions", "")
+    text = APPROVED_URL.sub("", _combined_markdown())
     banned_patterns = (
         r"(?i)kakadata",
         r"(?i)kakaonline",

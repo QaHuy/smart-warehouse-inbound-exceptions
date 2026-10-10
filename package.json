@@ -4,6 +4,13 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node --test tests/domain.test.mjs"
+    "test": "node --test tests/domain.test.mjs tests/uat.test.mjs",
+    "render:bpmn": "node tools/portfolio/render-bpmn.mjs diagrams/as-is-inbound.bpmn assets/diagrams/as-is-inbound.svg && node tools/portfolio/render-bpmn.mjs diagrams/to-be-inbound.bpmn assets/diagrams/to-be-inbound.svg",
+    "build:docs": "node tools/portfolio/build.mjs",
+    "build:site": "node tools/portfolio/assemble-site.mjs"
+  },
+  "devDependencies": {
+    "bpmn-js": "17.11.1",
+    "docx": "9.9.0"
   }
 }
