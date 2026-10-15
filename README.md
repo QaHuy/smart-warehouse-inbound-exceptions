@@ -4,7 +4,7 @@
 
 **Business Analysis case study · WMS/WCS inbound putaway** — a self-directed project covering problem framing, stakeholder analysis, BPMN process models, an SRS with user stories and acceptance criteria, data and API contracts, a traceability matrix, and 14 executed UAT cases.
 
-**[Live demo](https://qahuy.github.io/smart-warehouse-inbound-exceptions/demo/)** · **[Case study (web)](https://qahuy.github.io/smart-warehouse-inbound-exceptions/)** · **[Case study (PDF)](deliverables/Smart-Warehouse-BA-Case-Study.pdf)** · **[Case study (Word)](deliverables/Smart-Warehouse-BA-Case-Study.docx)** · **[One-page summary (PDF)](deliverables/Smart-Warehouse-BA-One-Pager.pdf)**
+**[Live demo](https://smart-warehouse-inbound-exceptions.vercel.app/)** · **[Case study (web)](https://qahuy.github.io/smart-warehouse-inbound-exceptions/)** · **[Case study (PDF)](deliverables/Smart-Warehouse-BA-Case-Study.pdf)** · **[Case study (Word)](deliverables/Smart-Warehouse-BA-Case-Study.docx)** · **[One-page summary (PDF)](deliverables/Smart-Warehouse-BA-One-Pager.pdf)**
 
 ![To-Be inbound flow at a glance: happy path on top, controlled exception paths below](assets/diagrams/to-be-at-a-glance.svg)
 

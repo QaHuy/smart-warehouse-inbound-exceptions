@@ -12,9 +12,11 @@ DECISIONS = PROJECT_ROOT / "docs" / "03-assumptions-and-decisions.md"
 REQUIRED_FILES = (README, CASE_BRIEF, STAKEHOLDERS, DECISIONS)
 PUBLIC_URL = "https://github.com/QaHuy/smart-warehouse-inbound-exceptions"
 PAGES_URL = "https://qahuy.github.io/smart-warehouse-inbound-exceptions/"
-# The only external URLs the foundation files may contain: the repository and its own Pages site.
+DEMO_URL = "https://smart-warehouse-inbound-exceptions.vercel.app/"
+# The only external URLs the foundation files may contain: the repository, its own Pages site,
+# and the hosted demo.
 APPROVED_URL = re.compile(
-    rf"(?:{re.escape(PUBLIC_URL)}|{re.escape(PAGES_URL)}[^\s)]*)"
+    rf"(?:{re.escape(PUBLIC_URL)}|{re.escape(PAGES_URL)}[^\s)]*|{re.escape(DEMO_URL)})"
 )
 DISCLOSURE = (
     "Personal WMS/WCS portfolio case study using synthetic data. "
@@ -70,6 +72,12 @@ def test_readme_has_delivery_legend_and_only_approved_urls():
     assert urls.count(PUBLIC_URL) == 1
     unapproved = [url for url in urls if not APPROVED_URL.fullmatch(url)]
     assert not unapproved, unapproved
+
+
+def test_readme_links_to_the_hosted_demo():
+    text = README.read_text(encoding="utf-8")
+    assert f"**[Live demo]({DEMO_URL})**" in text
+    assert f"{PAGES_URL}demo/" not in text
 
 
 def test_readme_links_directly_to_each_foundation_artifact():
